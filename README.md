@@ -1,12 +1,12 @@
-# ✈️ Havayolu Otomasyon Sistemi — Frontend
+# Havayolu Otomasyon Sistemi — Frontend
 
 React + JavaScript ile geliştirilmiş havayolu rezervasyon ve yönetim sistemi frontend uygulaması.
 
 ---
 
-## 🚀 Kurulum
+## Kurulum
 
-> ⚠️ **Not:** Backend ayrı çalışmalıdır (`localhost:5000`). Backend olmadan sadece arayüz görünür, API istekleri çalışmaz.
+> **Not:** Backend ayrı çalışmalıdır (`localhost:5000`). Backend olmadan sadece arayüz görünür, API istekleri çalışmaz.
 
 ### Gereksinimler
 - Node.js 18+
@@ -42,7 +42,7 @@ npm run preview
 
 ---
 
-## 🗂️ Proje Yapısı
+## Proje Yapısı
 
 ```
 src/
@@ -73,7 +73,7 @@ src/
 
 ---
 
-## 🔐 Kullanıcı Rolleri
+## Kullanıcı Rolleri
 
 | Rol | Yönlendirme | Erişim |
 |-----|-------------|--------|
@@ -82,7 +82,7 @@ src/
 
 ---
 
-## 📄 Sayfalar
+## Sayfalar
 
 ### Public (Giriş Gerektirmez)
 | Sayfa | Route |
@@ -125,7 +125,7 @@ src/
 
 ---
 
-## 🛠️ Teknolojiler
+## Teknolojiler
 
 | Teknoloji | Versiyon | Kullanım |
 |-----------|----------|----------|
@@ -139,7 +139,7 @@ src/
 
 ---
 
-## 🔄 Token Yönetimi
+## Token Yönetimi
 
 - Login sonrası `accessToken` ve `refreshToken` localStorage'a kaydedilir
 - Her istekte `Authorization: Bearer <token>` header'ı otomatik eklenir
@@ -148,7 +148,7 @@ src/
 
 ---
 
-## 🌐 API Bağlantısı
+## API Bağlantısı
 
 `.env` dosyasındaki `VITE_API_BASE_URL` değişkeni backend adresini belirtir.
 
@@ -160,7 +160,7 @@ Tüm endpoint tanımları `src/constants/apiEndpoints.js` dosyasındadır.
 
 ---
 
-## 👥 Geliştirici Notları
+## Geliştirici Notları
 
 - Component'ler direkt `axios` çağırmaz, `src/api/` klasöründeki servis fonksiyonları kullanılır
 - Form doğrulamaları `src/utils/validators.js` üzerinden yapılır
