@@ -1,0 +1,14 @@
+import axiosClient from "./axiosClient";
+import API from "../constants/apiEndpoints";
+
+export const userApi = {
+  getProfile: () => axiosClient.get(API.USERS.PROFILE),
+  updateProfile: (data) => axiosClient.put(API.USERS.PROFILE, data),
+
+  // Admin
+  getAllUsers: () => axiosClient.get(API.USERS.LIST),
+  updateUserStatus: (id, isActive) =>
+    axiosClient.patch(API.USERS.UPDATE_STATUS(id), { isActive }),
+};
+
+export default userApi;
