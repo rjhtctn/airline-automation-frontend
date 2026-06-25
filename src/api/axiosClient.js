@@ -1,0 +1,111 @@
+import axios from "axios";
+import tokenStorage from "../utils/tokenStorage";
+import API from "../constants/apiEndpoints";
+
+const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+// İstek interceptor — her isteğe access token ekler
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = tokenStorage.getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Yanıt interceptor — 401 gelince refresh token akışı
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+axiosClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    // 401 ve daha önce denenmediyse
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      const refreshToken = tokenStorage.getRefreshToken();
+      const expiredAccessToken = tokenStorage.getAccessToken();
+
+      // Refresh token yoksa direkt login'e gönder
+      if (!refreshToken) {
+        tokenStorage.clear();
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      if (isRefreshing) {
+        // Başka bir istek zaten refresh yapıyor, kuyruğa al
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axiosClient(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Süresi geçmiş token header'da, refresh token body'de gönderilir
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"}${API.AUTH.REFRESH_TOKEN}`,
+          { refreshToken },
+          {
+            headers: {
+              Authorization: `Bearer ${expiredAccessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const { accessToken, refreshToken: newRefreshToken } =
+          response.data.data;
+
+        tokenStorage.setTokens({
+          accessToken,
+          refreshToken: newRefreshToken,
+        });
+
+        axiosClient.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+        processQueue(null, accessToken);
+        return axiosClient(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        tokenStorage.clear();
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default axiosClient;

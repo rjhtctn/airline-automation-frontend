@@ -1,0 +1,617 @@
+/* ── Ticket Card ────────────────────────────── */
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ticket-list__count {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+}
+
+.ticket-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.ticket-card__header > div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ticket-card__number {
+  font-family: var(--font-mono);
+  font-weight: var(--font-bold);
+  color: var(--color-primary-dark);
+}
+
+.ticket-card__checked {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-success);
+  background: var(--color-success-bg);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+}
+
+.ticket-card__price {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-accent-dark);
+}
+
+.ticket-card__passenger {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--space-3);
+}
+
+.ticket-card__flight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-primary);
+  margin-bottom: var(--space-3);
+}
+
+.ticket-card__flight strong {
+  color: var(--color-text-primary);
+}
+
+.ticket-card__flight p {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.ticket-card__meta {
+  display: flex;
+  gap: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.ticket-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ticket-card__actions {
+  display: flex;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-light);
+  flex-wrap: wrap;
+}
+
+/* ── Ticket Detail ──────────────────────────── */
+.ticket-detail-page__back,
+.checkin-page__back,
+.boarding-pass-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+  transition: color var(--transition-fast);
+}
+
+.ticket-detail-page__back:hover,
+.checkin-page__back:hover,
+.boarding-pass-page__back:hover {
+  color: var(--color-primary);
+}
+
+.ticket-detail-page__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ticket-detail-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.ticket-detail-card__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ticket-detail-card__number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-primary-dark);
+}
+
+.ticket-detail-card__badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.ticket-detail-card__checked-badge {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-success);
+}
+
+.ticket-detail-card__section {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-5);
+}
+
+.ticket-detail-card__dl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ticket-detail-card__dl dt {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ticket-detail-card__dl dd {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+}
+
+.ticket-detail-card__price {
+  font-size: var(--text-xl) !important;
+  font-weight: var(--font-bold) !important;
+  color: var(--color-accent-dark) !important;
+}
+
+/* ── Check-In ───────────────────────────────── */
+.checkin-page__grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.checkin-summary__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.checkin-summary__row {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-primary);
+}
+
+.checkin-summary__label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+}
+
+.checkin-summary__time {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.checkin-summary__selected {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-success-bg);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.checkin-summary__seat {
+  display: block;
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-success);
+  font-family: var(--font-display);
+}
+
+.checkin-summary__seat-class {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.checkin-page__seats-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary-dark);
+  margin-bottom: var(--space-2);
+}
+
+.checkin-page__seats-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-6);
+}
+
+/* ── Seat Map ───────────────────────────────── */
+.seat-map__legend {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.seat-map__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.seat-map__legend-item::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.seat-map__legend-item--available::before {
+  background: var(--color-success-bg);
+  border: 2px solid var(--color-success);
+}
+
+.seat-map__legend-item--locked::before {
+  background: var(--color-warning-bg);
+  border: 2px solid var(--color-warning);
+}
+
+.seat-map__legend-item--occupied::before {
+  background: #f0f0f0;
+  border: 2px solid #ccc;
+}
+
+.seat-map__legend-item--selected::before {
+  background: var(--color-primary);
+  border: 2px solid var(--color-primary-dark);
+}
+
+.seat-map__classes {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.seat-map__class-badge {
+  font-size: var(--text-xs);
+  padding: 2px var(--space-3);
+  background: var(--color-border-light);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+}
+
+.seat-map__cockpit {
+  text-align: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  padding: var(--space-3);
+  background: var(--color-bg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  margin-bottom: var(--space-4);
+}
+
+.seat-map__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow-x: auto;
+}
+
+.seat-map__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.seat-map__row-label {
+  width: 28px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.seat-map__row-seats {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.seat-item {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.seat-item__number {
+  font-size: 9px;
+}
+
+.seat-item--available {
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.seat-item--available:hover:not(:disabled) {
+  background: var(--color-success);
+  color: white;
+  transform: scale(1.08);
+}
+
+.seat-item--locked {
+  background: var(--color-warning-bg);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.seat-item--occupied {
+  background: #f0f0f0;
+  border-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.seat-item--selected {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary-dark) !important;
+  color: white !important;
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+
+.seat-item:disabled {
+  cursor: not-allowed;
+}
+
+/* ── Boarding Pass ──────────────────────────── */
+.boarding-pass {
+  max-width: 520px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 2px solid var(--color-primary);
+}
+
+.boarding-pass__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-5) var(--space-6);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark),
+    var(--color-primary)
+  );
+  color: white;
+}
+
+.boarding-pass__airline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+}
+
+.boarding-pass__number {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  opacity: 0.85;
+}
+
+.boarding-pass__body {
+  padding: var(--space-6);
+}
+
+.boarding-pass__section {
+  margin-bottom: var(--space-4);
+}
+
+.boarding-pass__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.boarding-pass__value {
+  font-size: var(--text-lg);
+  color: var(--color-text-primary);
+}
+
+.boarding-pass__flight {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+.boarding-pass__flight-no {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-primary-dark);
+}
+
+.boarding-pass__plane {
+  color: var(--color-accent);
+  transform: rotate(90deg);
+}
+
+.boarding-pass__route {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-4);
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+.boarding-pass__airport {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--color-primary);
+}
+
+.boarding-pass__airport strong {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+}
+
+.boarding-pass__airport p {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.boarding-pass__time {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-1);
+}
+
+.boarding-pass__arrow {
+  font-size: var(--text-xl);
+  color: var(--color-accent);
+  text-align: center;
+}
+
+.boarding-pass__info-item {
+  padding: var(--space-3);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+}
+
+.boarding-pass__seat-box {
+  text-align: center;
+}
+
+.boarding-pass__seat {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl) !important;
+  color: var(--color-accent-dark) !important;
+}
+
+.boarding-pass__barcode {
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-bg);
+  border-top: 2px dashed var(--color-border);
+  text-align: center;
+}
+
+.boarding-pass__barcode-lines {
+  height: 48px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-primary-dark) 0px,
+    var(--color-primary-dark) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+  margin-bottom: var(--space-2);
+}
+
+.boarding-pass__barcode span {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.boarding-pass-page__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+/* ── Print ──────────────────────────────────── */
+@media print {
+  .header,
+  .passenger-nav,
+  .footer,
+  .boarding-pass-page__back,
+  .page-header,
+  .boarding-pass-page__actions,
+  .admin-topbar,
+  .sidebar {
+    display: none !important;
+  }
+
+  .boarding-pass {
+    border: none;
+    box-shadow: none;
+    max-width: 100%;
+  }
+}
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 900px) {
+  .checkin-page__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .boarding-pass__route {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .boarding-pass__arrow {
+    transform: rotate(90deg);
+  }
+}

@@ -1,0 +1,66 @@
+const ROUTES = {
+  // Public
+  HOME: "/",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  FLIGHT_SEARCH: "/flight-search",
+  FLIGHT_DETAIL: "/flight-detail/:id",
+  flightDetail: (id) => `/flight-detail/${id}`,
+
+  // Passenger
+  PASSENGER: {
+    PROFILE: "/passenger/profile",
+    RESERVATIONS: "/passenger/reservations",
+    RESERVATION_CREATE: "/passenger/reservation-create/:flightId",
+    reservationCreate: (flightId) => `/passenger/reservation-create/${flightId}`,
+    RESERVATION_DETAIL: "/passenger/reservation-detail/:id",
+    reservationDetail: (id) => `/passenger/reservation-detail/${id}`,
+    RESERVATION_QUERY: "/passenger/reservation-query",
+    PAYMENT: "/passenger/payment/:reservationId",
+    payment: (reservationId) => `/passenger/payment/${reservationId}`,
+    TICKETS: "/passenger/tickets",
+    TICKET_DETAIL: "/passenger/ticket-detail/:ticketNumber",
+    ticketDetail: (ticketNumber) => `/passenger/ticket-detail/${ticketNumber}`,
+    CHECK_IN: "/passenger/check-in/:ticketId",
+    checkIn: (ticketId) => `/passenger/check-in/${ticketId}`,
+    BOARDING_PASS: "/passenger/boarding-pass/:ticketId",
+    boardingPass: (ticketId) => `/passenger/boarding-pass/${ticketId}`,
+    NOTIFICATIONS: "/passenger/notifications",
+  },
+
+  // Admin
+  ADMIN: {
+    DASHBOARD: "/admin/dashboard",
+    USERS: "/admin/users",
+    AIRPORTS: "/admin/airports",
+    AIRPORT_CREATE: "/admin/airports/create",
+    AIRPORT_EDIT: "/admin/airports/edit/:id",
+    airportEdit: (id) => `/admin/airports/edit/${id}`,
+    AIRCRAFTS: "/admin/aircrafts",
+    AIRCRAFT_CREATE: "/admin/aircrafts/create",
+    AIRCRAFT_EDIT: "/admin/aircrafts/edit/:id",
+    aircraftEdit: (id) => `/admin/aircrafts/edit/${id}`,
+    AIRCRAFT_SEATS: "/admin/aircrafts/:id/seats",
+    aircraftSeats: (id) => `/admin/aircrafts/${id}/seats`,
+    FLIGHTS: "/admin/flights",
+    FLIGHT_CREATE: "/admin/flights/create",
+    FLIGHT_EDIT: "/admin/flights/edit/:id",
+    flightEdit: (id) => `/admin/flights/edit/${id}`,
+    FLIGHT_DETAIL: "/admin/flights/detail/:id",
+    flightDetail: (id) => `/admin/flights/detail/${id}`,
+    RESERVATIONS: "/admin/reservations",
+    RESERVATION_DETAIL: "/admin/reservations/:id",
+    reservationDetail: (id) => `/admin/reservations/${id}`,
+    TICKETS: "/admin/tickets",
+    TICKET_DETAIL: "/admin/tickets/:ticketNumber",
+    ticketDetail: (ticketNumber) => `/admin/tickets/${ticketNumber}`,
+    PAYMENTS: "/admin/payments",
+    REPORTS_SALES: "/admin/reports/sales",
+    REPORTS_OCCUPANCY: "/admin/reports/flight-occupancy",
+    AUDIT_LOGS: "/admin/audit-logs",
+  },
+
+  NOT_FOUND: "*",
+};
+
+export default ROUTES;
