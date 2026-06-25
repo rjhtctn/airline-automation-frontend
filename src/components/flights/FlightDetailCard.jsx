@@ -20,10 +20,10 @@ const FlightDetailCard = ({ flight, passengerCount = 1 }) => {
         <div className="flight-detail-card__endpoint">
           <MapPin size={16} />
           <div>
-            <strong>{flight.departureAirport.city}</strong>
-            <p>{flight.departureAirport.airportName}</p>
+            <strong>{flight.departureAirport?.city || flight.departureCity}</strong>
+            <p>{flight.departureAirport?.airportName || flight.departureAirportName}</p>
             <p className="flight-detail-card__code">
-              {flight.departureAirport.airportCode}
+              {flight.departureAirport?.airportCode || flight.departureAirportCode}
             </p>
             <p className="flight-detail-card__datetime">
               {formatDateTime(flight.departureTime)}
@@ -42,10 +42,10 @@ const FlightDetailCard = ({ flight, passengerCount = 1 }) => {
         <div className="flight-detail-card__endpoint">
           <MapPin size={16} />
           <div>
-            <strong>{flight.arrivalAirport.city}</strong>
-            <p>{flight.arrivalAirport.airportName}</p>
+            <strong>{flight.arrivalAirport?.city || flight.arrivalCity}</strong>
+            <p>{flight.arrivalAirport?.airportName || flight.arrivalAirportName}</p>
             <p className="flight-detail-card__code">
-              {flight.arrivalAirport.airportCode}
+              {flight.arrivalAirport?.airportCode || flight.arrivalAirportCode}
             </p>
             <p className="flight-detail-card__datetime">
               {formatDateTime(flight.arrivalTime)}
@@ -57,16 +57,20 @@ const FlightDetailCard = ({ flight, passengerCount = 1 }) => {
       <div className="flight-detail-card__info grid-3">
         <div className="flight-detail-card__info-item">
           <span className="flight-detail-card__info-label">Uçak</span>
-          <span>{flight.aircraft.model}</span>
+          <span>{flight.aircraft?.model || flight.aircraftModel}</span>
           <span className="flight-detail-card__info-sub">
-            {flight.aircraft.registrationNumber}
+            {flight.aircraft?.registrationNumber || flight.aircraftRegistrationNumber}
           </span>
         </div>
         <div className="flight-detail-card__info-item">
           <span className="flight-detail-card__info-label">
-            <Users size={14} /> Müsait Koltuk
+            {/*Eski kod */}
+            {/*<Users size={14} /> Müsait Koltuk*/}
+            {/*Yeni kod */}
+            <Users size={14} /> Koltuk Bilgisi
           </span>
-          <span>{flight.availableSeatCount}</span>
+          {/*<span>{flight.availableSeatCount}</span>*/}
+          <span>{flight.seatInfoLabel || "Koltuk bilgisi yok"}</span>
         </div>
         <div className="flight-detail-card__info-item">
           <span className="flight-detail-card__info-label">

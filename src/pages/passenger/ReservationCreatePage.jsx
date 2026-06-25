@@ -5,15 +5,16 @@ import { ArrowLeft } from "lucide-react";
 import flightApi from "../../api/flightApi";
 import useReservations from "../../hooks/useReservations";
 import useFlightSearchStore from "../../store/flightSearchStore";
-import PassengerFormList, {
-  createEmptyPassengers,
-} from "../../components/reservations/PassengerFormList";
+import PassengerFormList from "../../components/reservations/PassengerFormList";
+import { createEmptyPassengers } from "../../utils/passengerFactory";
 import FlightDetailCard from "../../components/flights/FlightDetailCard";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Button from "../../components/common/Button";
 import ROUTES from "../../constants/routes";
 import validators from "../../utils/validators";
+import { mapFlight } from "../../api/mappers";
+import { removeEmptyValues } from "../../utils/objectUtils";
 
 const validatePassenger = (passenger) => {
   const errors = {
@@ -45,7 +46,7 @@ const ReservationCreatePage = () => {
       setFlightLoading(true);
       try {
         const response = await flightApi.getById(flightId);
-        setFlight(response.data.data);
+        setFlight(mapFlight(response.data.data));
       } catch (err) {
         setFlightError(
           err.response?.data?.message || "Uçuş bilgisi yüklenemedi."
@@ -84,15 +85,17 @@ const ReservationCreatePage = () => {
 
     try {
       const payload = {
-        flightId: Number(flightId),
-        passengers: passengers.map((p) => ({
-          firstName: p.firstName.trim(),
-          lastName: p.lastName.trim(),
-          nationalId: p.nationalId.trim() || null,
-          passportNumber: p.passportNumber.trim() || null,
-          dateOfBirth: p.dateOfBirth || null,
-          gender: p.gender || null,
-        })),
+        flightId,
+        passengers: passengers.map((p) =>
+          removeEmptyValues({
+            firstName: p.firstName.trim(),
+            lastName: p.lastName.trim(),
+            nationalId: p.nationalId.trim(),
+            passportNumber: p.passportNumber.trim(),
+            dateOfBirth: p.dateOfBirth,
+            gender: p.gender,
+          })
+        ),
       };
 
       const reservation = await createReservation(payload);

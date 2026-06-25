@@ -10,6 +10,7 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 import Loader from "../../components/common/Loader";
 import ROUTES from "../../constants/routes";
 import validators from "../../utils/validators";
+import { mapReservation } from "../../api/mappers";
 
 const ReservationQueryPage = () => {
   const [code, setCode] = useState("");
@@ -34,7 +35,7 @@ const ReservationQueryPage = () => {
     setLoading(true);
     try {
       const response = await reservationApi.getByCode(trimmed);
-      setReservation(response.data.data);
+      setReservation(mapReservation(response.data.data));
       toast.success("Rezervasyon bulundu.");
     } catch (err) {
       const message =
@@ -44,6 +45,15 @@ const ReservationQueryPage = () => {
       setLoading(false);
     }
   };
+  {/*Yeni Kod*/}
+    const expireTime = reservation?.expireDate
+    ? new Date(reservation.expireDate).getTime()
+    : null;
+
+  const isExpired =
+    Number.isFinite(expireTime) && expireTime < Date.now();
+
+  const canPay = reservation?.status === "PENDING" && !isExpired;
 
   return (
     <div className="page reservation-query-page">
@@ -96,7 +106,8 @@ const ReservationQueryPage = () => {
                 <ArrowRight size={16} />
               </Button>
             </Link>
-            {reservation.status === "PENDING" && (
+            {/*{reservation.status === "PENDING" && (*/}
+            {canPay && (
               <Link to={ROUTES.PASSENGER.payment(reservation.id)}>
                 <Button variant="accent">Ödeme Yap</Button>
               </Link>

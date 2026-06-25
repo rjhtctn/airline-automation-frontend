@@ -3,6 +3,7 @@ import reservationApi from "../../../api/reservationApi";
 import ReservationTable from "../../../components/admin/ReservationTable";
 import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
+import { mapReservations } from "../../../api/mappers";
 
 const AdminReservationsPage = () => {
   const [reservations, setReservations] = useState([]);
@@ -12,7 +13,7 @@ const AdminReservationsPage = () => {
   useEffect(() => {
     reservationApi
       .getAll()
-      .then((res) => setReservations(res.data.data || []))
+      .then((res) => setReservations(mapReservations(res.data.data || [])))
       .catch((err) =>
         setError(err.response?.data?.message || "Rezervasyonlar yüklenemedi.")
       )

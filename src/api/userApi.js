@@ -7,6 +7,7 @@ export const userApi = {
 
   // Admin
   getAllUsers: () => axiosClient.get(API.USERS.LIST),
+  createAdmin: (data) => axiosClient.post(API.USERS.CREATE_ADMIN, data),
   updateUserStatus: (id, isActive) =>
     axiosClient.patch(API.USERS.UPDATE_STATUS(id), { isActive }),
 };

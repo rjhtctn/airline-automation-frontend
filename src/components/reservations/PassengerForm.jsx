@@ -4,6 +4,7 @@ import Select from "../common/Select";
 const GENDER_OPTIONS = [
   { value: "MALE", label: "Erkek" },
   { value: "FEMALE", label: "Kadın" },
+  { value: "OTHER", label: "Diğer" },
 ];
 
 const PassengerForm = ({

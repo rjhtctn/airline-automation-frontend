@@ -39,6 +39,8 @@ const PaymentForm = ({ reservationId, onPay, loading = false, error = null }) =>
     setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
+  //Eski kod
+  /*
   const validate = () => {
     const newErrors = {
       cardHolderName: validators.required(form.cardHolderName),
@@ -55,17 +57,44 @@ const PaymentForm = ({ reservationId, onPay, loading = false, error = null }) =>
     setErrors(filtered);
     return Object.keys(filtered).length === 0;
   };
+*/
+//Yeni eklenen validate fonksiyonu
+const validate = () => {
+  const expireMonthError = validators.expireMonth(form.expireMonth);
+  const expireYearError = validators.expireYear(form.expireYear);
+  const expiryDateError =
+    !expireMonthError && !expireYearError
+      ? validators.expiryDate(form.expireMonth, form.expireYear)
+      : null;
+
+  const newErrors = {
+    cardHolderName: validators.cardHolderName(form.cardHolderName),
+    cardNumber: validators.cardNumber(form.cardNumber),
+    expireMonth: expireMonthError,
+    expireYear: expireYearError || expiryDateError,
+    cvv: validators.cvv(form.cvv),
+    paymentMethod: validators.required(form.paymentMethod),
+  };
+
+  const filtered = Object.fromEntries(
+    Object.entries(newErrors).filter(([, v]) => v)
+  );
+
+  setErrors(filtered);
+  return Object.keys(filtered).length === 0;
+};
+//----------
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     onPay({
-      reservationId: Number(reservationId),
+      reservationId,
       cardHolderName: form.cardHolderName.trim(),
-      cardNumber: form.cardNumber.replace(/\s/g, ""),
-      expireMonth: form.expireMonth,
-      expireYear: form.expireYear,
+      //cardNumber: form.cardNumber.replace(/\s/g, ""),
+      cardNumber: form.cardNumber.replace(/[\s-]/g, ""),//güncellendi
+      expiryDate: `${form.expireMonth}/${form.expireYear}`,
       cvv: form.cvv,
       paymentMethod: form.paymentMethod,
     });
@@ -111,7 +140,7 @@ const PaymentForm = ({ reservationId, onPay, loading = false, error = null }) =>
         onChange={handleChange}
         error={errors.cardNumber}
         placeholder="4242 4242 4242 4242"
-        maxLength={19}
+        maxLength={23}
         required
       />
 

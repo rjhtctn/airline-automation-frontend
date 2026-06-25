@@ -5,12 +5,23 @@ import { ArrowLeft } from "lucide-react";
 import useTickets from "../../hooks/useTickets";
 import useCheckIn from "../../hooks/useCheckIn";
 import ticketApi from "../../api/ticketApi";
+import { mapTicket } from "../../api/mappers";
 import SeatMap from "../../components/checkin/SeatMap";
 import CheckInSummary from "../../components/checkin/CheckInSummary";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Button from "../../components/common/Button";
 import ROUTES from "../../constants/routes";
+
+//Yeni eklenen kod
+const formatLockTime = (totalSeconds) => {
+  const safeSeconds = Math.max(0, Number(totalSeconds) || 0);
+  const minutes = Math.floor(safeSeconds / 60);
+  const seconds = safeSeconds % 60;
+
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+};
+
 
 const CheckInPage = () => {
   const { ticketId } = useParams();
@@ -30,8 +41,15 @@ const CheckInPage = () => {
   const [ticketDetail, setTicketDetail] = useState(null);
   const [seats, setSeats] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
+  // SADECE BU İKİ SATIR EKLENDİ --
+  const [lockExpiresAt, setLockExpiresAt] = useState(null);
+  const [lockRemainingSeconds, setLockRemainingSeconds] = useState(null);
+  // ------------------------
   const [pageLoading, setPageLoading] = useState(true);
   const [pageError, setPageError] = useState(null);
+
+  
+
   const selectedSeatRef = useRef(null);
   const ticketRef = useRef(null);
 
@@ -52,7 +70,7 @@ const CheckInPage = () => {
         getAvailableSeats(ticketData.flightId),
       ]);
 
-      setTicketDetail(detail.data.data);
+      setTicketDetail(mapTicket(detail.data.data));
       setSeats(seatData);
     } catch (err) {
       setPageError(
@@ -72,6 +90,39 @@ const CheckInPage = () => {
     ticketRef.current = ticket;
   }, [selectedSeat, ticket]);
 
+  ///Kod eklendi
+  useEffect(() => {
+  if (!lockExpiresAt) {
+    setLockRemainingSeconds(null);
+    return undefined;
+  }
+
+  const updateRemainingTime = () => {
+    const remaining = Math.max(
+      0,
+      Math.ceil((lockExpiresAt - Date.now()) / 1000)
+    );
+
+    setLockRemainingSeconds(remaining);
+
+    if (remaining <= 0) {
+      setSelectedSeat(null);
+      setLockExpiresAt(null);
+      loadData();
+    }
+  };
+
+  updateRemainingTime();
+
+  const timerId = window.setInterval(updateRemainingTime, 1000);
+
+  return () => {
+    window.clearInterval(timerId);
+    };
+  }, [lockExpiresAt, loadData]);
+
+//Eklenen kodun bitiş kısmı
+
   useEffect(() => {
     return () => {
       const seat = selectedSeatRef.current;
@@ -87,19 +138,37 @@ const CheckInPage = () => {
     try {
       if (selectedSeat) {
         await unlockSeat(ticket.flightId, selectedSeat.id);
+        setLockExpiresAt(null);//Yeni eklendi 
       }
 
       if (selectedSeat?.id === seat.id) {
         setSelectedSeat(null);
+        setLockExpiresAt(null); // <-- YENİ: Seçim iptal olunca sayacı sıfırla
         return;
       }
-
+/*Kodun eski hali
       await lockSeat(ticket.flightId, seat.id);
       setSelectedSeat(seat);
       toast.success(`Koltuk ${seat.seatNumber} seçildi.`);
     } catch {
       setSelectedSeat(null);
+    }*/   
+    const lockResult = await lockSeat(ticket.flightId, seat.id);
+    const expiresInSeconds = Number(lockResult?.expiresInSeconds) || 0;
+
+    setSelectedSeat(seat);
+
+    if (expiresInSeconds > 0) {
+      setLockExpiresAt(Date.now() + expiresInSeconds * 1000);
+    } else {
+      setLockExpiresAt(null);
     }
+
+    toast.success(`Koltuk ${seat.seatNumber} geçici olarak seçildi.`);
+  } catch {
+    setSelectedSeat(null);
+    setLockExpiresAt(null);
+  }   
   };
 
   const handleComplete = async () => {
@@ -109,7 +178,7 @@ const CheckInPage = () => {
     }
 
     try {
-      await completeCheckIn(Number(ticketId), selectedSeat.id);
+      await completeCheckIn(ticketId, selectedSeat.id);
       toast.success("Check-in tamamlandı!");
       navigate(ROUTES.PASSENGER.boardingPass(ticketId));
     } catch {
@@ -160,6 +229,20 @@ const CheckInPage = () => {
           <p className="checkin-page__seats-hint">
             Yalnızca yeşil koltuklar seçilebilir. Koltuk uçuşa özeldir.
           </p>
+          {/* === YENİ EKLENEN SAYAÇ ALANI BAŞLANGICI === */}
+
+          {selectedSeat && lockRemainingSeconds != null && (
+            <div className="checkin-page__lock-info">
+              <span>
+                Koltuk <strong>{selectedSeat.seatNumber}</strong> geçici olarak ayrıldı.
+              </span>
+              <span>
+                Kalan süre: <strong>{formatLockTime(lockRemainingSeconds)}</strong>
+              </span>
+            </div>
+          )}
+
+            {/* === YENİ EKLENEN SAYAÇ ALANI BİTİŞİ === */}
 
           <SeatMap
             seats={seats}

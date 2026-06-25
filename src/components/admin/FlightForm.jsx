@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
 import validators from "../../utils/validators";
 import { toInputDateTime } from "../../utils/formatDate";
+import { removeEmptyValues } from "../../utils/objectUtils";
 
 const FlightForm = ({
   initialData = null,
@@ -96,16 +97,18 @@ const FlightForm = ({
     e.preventDefault();
     if (!validate()) return;
 
-    onSubmit({
-      flightNumber: form.flightNumber.trim().toUpperCase(),
-      departureAirportId: Number(form.departureAirportId),
-      arrivalAirportId: Number(form.arrivalAirportId),
-      aircraftId: Number(form.aircraftId),
-      departureTime: new Date(form.departureTime).toISOString(),
-      arrivalTime: new Date(form.arrivalTime).toISOString(),
-      basePrice: Number(form.basePrice),
-      gate: form.gate.trim() || null,
-    });
+    onSubmit(
+      removeEmptyValues({
+        flightNumber: form.flightNumber.trim().toUpperCase(),
+        departureAirportId: form.departureAirportId,
+        arrivalAirportId: form.arrivalAirportId,
+        aircraftId: form.aircraftId,
+        departureTime: new Date(form.departureTime).toISOString(),
+        arrivalTime: new Date(form.arrivalTime).toISOString(),
+        basePrice: Number(form.basePrice),
+        gate: form.gate.trim(),
+      })
+    );
   };
 
   return (

@@ -12,9 +12,9 @@ import ROUTES from "../../constants/routes";
 const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loading, error, clearError } = useAuth();
+  const { login, resendVerificationEmail, loading, error, clearError } = useAuth();
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ email: location.state?.email || "", password: "" });
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -58,6 +58,27 @@ const LoginForm = () => {
     }
   };
 
+  const handleResendVerification = async () => {
+    const email = form.email.trim();
+    const emailError = validators.email(email);
+    if (emailError) {
+      setErrors((prev) => ({ ...prev, email: emailError }));
+      return;
+    }
+
+    try {
+      await resendVerificationEmail(email);
+      toast.success("Doğrulama kodu tekrar gönderildi.");
+      navigate(ROUTES.VERIFY_EMAIL, { state: { email } });
+    } catch {
+      // Hata authStore'da tutulur
+    }
+  };
+
+  const isVerificationError = /doğrula|dogrula|verify|verified|verification/i.test(
+    error || ""
+  );
+
   return (
     <form onSubmit={handleSubmit} className="auth-form" noValidate>
       <ErrorMessage message={error} />
@@ -86,9 +107,27 @@ const LoginForm = () => {
         required
       />
 
+      <div className="auth-form__meta">
+        <Link to={ROUTES.FORGOT_PASSWORD} className="auth-form__link">
+          Şifremi unuttum
+        </Link>
+      </div>
+
       <Button type="submit" variant="primary" fullWidth loading={loading}>
         Giriş Yap
       </Button>
+
+      {isVerificationError && (
+        <Button
+          type="button"
+          variant="outline"
+          fullWidth
+          loading={loading}
+          onClick={handleResendVerification}
+        >
+          Doğrulama Kodunu Tekrar Gönder
+        </Button>
+      )}
 
       <p className="auth-form__footer">
         Hesabınız yok mu?{" "}

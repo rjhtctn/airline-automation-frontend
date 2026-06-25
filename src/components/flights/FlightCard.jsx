@@ -25,7 +25,7 @@ const FlightCard = ({ flight, passengerCount = 1 }) => {
             {formatTime(flight.departureTime)}
           </span>
           <span className="flight-card__city-name">{flight.departureCity}</span>
-          <span className="flight-card__airport">{flight.departureAirport}</span>
+          <span className="flight-card__airport">{flight.departureAirportName}</span>
         </div>
 
         <div className="flight-card__middle">
@@ -42,7 +42,7 @@ const FlightCard = ({ flight, passengerCount = 1 }) => {
             {formatTime(flight.arrivalTime)}
           </span>
           <span className="flight-card__city-name">{flight.arrivalCity}</span>
-          <span className="flight-card__airport">{flight.arrivalAirport}</span>
+          <span className="flight-card__airport">{flight.arrivalAirportName}</span>
         </div>
       </div>
 
@@ -50,7 +50,10 @@ const FlightCard = ({ flight, passengerCount = 1 }) => {
         <div className="flight-card__meta">
           <span>
             <Users size={14} />
-            {flight.availableSeatCount} koltuk
+            {/*Eski kod */}
+            {/*{flight.availableSeatCount} koltuk*/}
+            {/*Yeni kod */}
+            {flight.seatInfoLabel || "Koltuk bilgisi yok"}
           </span>
           {flight.gate && <span>Kapı: {flight.gate}</span>}
         </div>

@@ -1,3 +1,27 @@
+//Kod Güncellemesi
+const normalizeCardNumber = (value = "") =>
+  String(value).replace(/[\s-]/g, "");
+
+const isValidLuhn = (value) => {
+  let sum = 0;
+  let shouldDouble = false;
+
+  for (let index = value.length - 1; index >= 0; index -= 1) {
+    let digit = Number(value[index]);
+
+    if (shouldDouble) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+
+  return sum % 10 === 0;
+};
+//-------
+
 export const validators = {
   required: (value) => {
     if (!value && value !== 0) return "Bu alan zorunludur.";
@@ -27,11 +51,52 @@ export const validators = {
     return null;
   },
 
+  //Eski kod
+  /* 
   cardNumber: (value) => {
     if (!value) return "Kart numarası zorunludur.";
     const clean = value.replace(/\s/g, "");
     if (!/^\d{16}$/.test(clean)) return "Kart numarası 16 haneli olmalıdır.";
     return null;
+  },
+  */
+  //Güncelleme
+  cardNumber: (value) => {
+  if (!value) return "Kart numarası zorunludur.";
+
+  const clean = normalizeCardNumber(value);
+
+  if (!/^\d{12,19}$/.test(clean)) {
+    return "Kart numarası 12-19 hane arasında olmalıdır.";
+  }
+
+  if (!isValidLuhn(clean)) {
+    return "Kart numarası geçersiz.";
+  }
+
+  return null;
+  },
+
+  //---
+  //Yeni eklenen validator
+  cardHolderName: (value) => {
+  if (!value) return "Kart üzerindeki isim zorunludur.";
+
+  const normalized = String(value).trim().replace(/\s+/g, " ");
+
+  if (normalized.length < 3 || normalized.length > 100) {
+    return "Kart üzerindeki isim 3-100 karakter arasında olmalıdır.";
+  }
+
+  if (/[0-9<>]/.test(normalized)) {
+    return "Kart üzerindeki isim rakam veya özel karakter içeremez.";
+  }
+
+  if (normalized.split(" ").length < 2) {
+    return "Kart üzerindeki isim ad ve soyad içermelidir.";
+  }
+
+  return null;
   },
 
   cvv: (value) => {
@@ -53,6 +118,32 @@ export const validators = {
     const y = parseInt(value, 10);
     if (isNaN(y) || y < currentYear) return "Kart süresi dolmuş.";
     return null;
+  },
+
+  //Yeni eklenen validator
+  expiryDate: (month, year) => {
+  if (!month || !year) return null;
+
+  const m = Number(month);
+  const y = Number(year);
+
+  if (!Number.isInteger(m) || m < 1 || m > 12) {
+    return "Kart son kullanma tarihi geçersiz.";
+  }
+
+  if (!Number.isInteger(y)) {
+    return "Kart son kullanma tarihi geçersiz.";
+  }
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
+  if (y < currentYear || (y === currentYear && m < currentMonth)) {
+    return "Kart süresi dolmuş.";
+  }
+
+  return null;
   },
 
   passengerName: (value) => {

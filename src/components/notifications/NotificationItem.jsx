@@ -10,6 +10,8 @@ const TYPE_ICON = {
   FLIGHT_CANCELLED: "❌",
   CHECKIN_COMPLETED: "✅",
   TICKET_CANCELLED: "🚫",
+  RESERVATION_EXPIRED: "⌛",
+  TICKET_CREATED: "🎟️",
 };
 
 const NotificationItem = ({ notification, onMarkAsRead }) => {

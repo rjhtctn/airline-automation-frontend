@@ -9,6 +9,7 @@ import FlightForm from "../../../components/admin/FlightForm";
 import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
 import ROUTES from "../../../constants/routes";
+import { mapFlight } from "../../../api/mappers";
 
 const AdminFlightEditPage = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const AdminFlightEditPage = () => {
       aircraftApi.getAll(),
     ])
       .then(([fl, ap, ac]) => {
-        setFlight(fl.data.data);
+        setFlight(mapFlight(fl.data.data));
         setAirports(ap.data.data || []);
         setAircrafts(ac.data.data || []);
       })

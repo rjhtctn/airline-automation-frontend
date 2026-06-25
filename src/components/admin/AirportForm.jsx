@@ -43,8 +43,8 @@ const AirportForm = ({
       city: validators.required(form.city),
       country: validators.required(form.country),
     };
-    if (form.airportCode && form.airportCode.length > 5) {
-      newErrors.airportCode = "Kod en fazla 5 karakter olabilir.";
+    if (form.airportCode && form.airportCode.trim().length !== 3) {
+      newErrors.airportCode = "Havaalanı kodu tam 3 karakter olmalıdır.";
     }
 
     const filtered = Object.fromEntries(
@@ -86,7 +86,7 @@ const AirportForm = ({
           onChange={handleChange}
           error={errors.airportCode}
           placeholder="IST"
-          maxLength={5}
+          maxLength={3}
           required
         />
         <Input

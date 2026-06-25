@@ -64,7 +64,16 @@ const ReservationDetailPage = () => {
 
   if (!reservation) return null;
 
-  const canPay = reservation.status === "PENDING";
+  {/*const canPay = reservation.status === "PENDING";
+  const canCancel = reservation.status === "PENDING";*/}
+  const expireTime = reservation.expireDate
+  ? new Date(reservation.expireDate).getTime()
+  : null;
+
+  const isExpired =
+  Number.isFinite(expireTime) && expireTime < Date.now();
+
+  const canPay = reservation.status === "PENDING" && !isExpired;
   const canCancel = reservation.status === "PENDING";
 
   return (

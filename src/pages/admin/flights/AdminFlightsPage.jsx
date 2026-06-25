@@ -12,6 +12,7 @@ import ErrorMessage from "../../../components/common/ErrorMessage";
 import { formatDateTime } from "../../../utils/formatDate";
 import { formatPrice } from "../../../utils/formatPrice";
 import ROUTES from "../../../constants/routes";
+import { mapFlights } from "../../../api/mappers";
 
 const AdminFlightsPage = () => {
   const openConfirmDialog = useUiStore((s) => s.openConfirmDialog);
@@ -24,7 +25,7 @@ const AdminFlightsPage = () => {
     setError(null);
     try {
       const response = await flightApi.getAll();
-      setFlights(response.data.data || []);
+      setFlights(mapFlights(response.data.data || []));
     } catch (err) {
       setError(err.response?.data?.message || "Uçuşlar yüklenemedi.");
     } finally {
@@ -67,9 +68,14 @@ const AdminFlightsPage = () => {
       title: "Fiyat",
       render: (val) => formatPrice(val),
     },
-    {
+    /*Eski kod
       key: "availableSeatCount",
       title: "Müsait Koltuk",
+    */
+    {
+      key: "seatInfoLabel",
+      title: "Koltuk Bilgisi",
+      render: (_, row) => row.seatInfoLabel || "—",
     },
     {
       key: "status",

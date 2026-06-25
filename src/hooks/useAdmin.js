@@ -40,6 +40,21 @@ const useAdmin = () => {
     }
   }, []);
 
+  const createAdmin = useCallback(async (data) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await userApi.createAdmin(data);
+      return response.data.data;
+    } catch (err) {
+      const message = err.response?.data?.message || "Admin oluşturulamadı.";
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const updateUserStatus = useCallback(async (id, isActive) => {
     try {
       await userApi.updateUserStatus(id, isActive);
@@ -88,6 +103,7 @@ const useAdmin = () => {
     setError,
     getDashboard,
     getUsers,
+    createAdmin,
     updateUserStatus,
     getAirports,
     getAircrafts,

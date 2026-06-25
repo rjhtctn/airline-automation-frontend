@@ -6,10 +6,12 @@ import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
 import validators from "../../utils/validators";
 import { getRoleLabel } from "../../utils/roleUtils";
+import { removeEmptyValues } from "../../utils/objectUtils";
 
 const GENDER_OPTIONS = [
   { value: "MALE", label: "Erkek" },
   { value: "FEMALE", label: "Kadın" },
+  { value: "OTHER", label: "Diğer" },
 ];
 
 const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
@@ -17,11 +19,11 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
     firstName: profile?.firstName || "",
     lastName: profile?.lastName || "",
     phoneNumber: profile?.phoneNumber || "",
-    nationalId: profile?.nationalId || "",
-    passportNumber: profile?.passportNumber || "",
-    dateOfBirth: profile?.dateOfBirth?.split("T")[0] || "",
-    gender: profile?.gender || "",
-    nationality: profile?.nationality || "",
+    nationalId: profile?.passengerProfile?.nationalId || "",
+    passportNumber: profile?.passengerProfile?.passportNumber || "",
+    dateOfBirth: profile?.passengerProfile?.dateOfBirth?.split("T")[0] || "",
+    gender: profile?.passengerProfile?.gender || "",
+    nationality: profile?.passengerProfile?.nationality || "",
   });
   const [errors, setErrors] = useState({});
 
@@ -31,11 +33,11 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
         phoneNumber: profile.phoneNumber || "",
-        nationalId: profile.nationalId || "",
-        passportNumber: profile.passportNumber || "",
-        dateOfBirth: profile.dateOfBirth?.split("T")[0] || "",
-        gender: profile.gender || "",
-        nationality: profile.nationality || "",
+        nationalId: profile.passengerProfile?.nationalId || "",
+        passportNumber: profile.passengerProfile?.passportNumber || "",
+        dateOfBirth: profile.passengerProfile?.dateOfBirth?.split("T")[0] || "",
+        gender: profile.passengerProfile?.gender || "",
+        nationality: profile.passengerProfile?.nationality || "",
       });
     }
   }, [profile]);
@@ -65,16 +67,20 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
     e.preventDefault();
     if (!validate()) return;
 
-    onSave({
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      phoneNumber: form.phoneNumber.trim() || null,
-      nationalId: form.nationalId.trim() || null,
-      passportNumber: form.passportNumber.trim() || null,
-      dateOfBirth: form.dateOfBirth || null,
-      gender: form.gender || null,
-      nationality: form.nationality.trim() || null,
-    });
+    onSave(
+      removeEmptyValues({
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        phoneNumber: form.phoneNumber.trim(),
+        passengerProfile: removeEmptyValues({
+          nationalId: form.nationalId.trim(),
+          passportNumber: form.passportNumber.trim(),
+          dateOfBirth: form.dateOfBirth,
+          gender: form.gender,
+          nationality: form.nationality.trim(),
+        }),
+      })
+    );
   };
 
   return (

@@ -9,6 +9,7 @@ import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Button from "../../components/common/Button";
 import ROUTES from "../../constants/routes";
+import { canCancelTicket, canCheckInTicket } from "../../utils/ticketRules";
 
 const TicketDetailPage = () => {
   const { ticketNumber } = useParams();
@@ -63,8 +64,8 @@ const TicketDetailPage = () => {
 
   if (!ticket) return null;
 
-  const canCheckIn = ticket.status === "ACTIVE" && !ticket.isCheckedIn;
-  const canCancel = ticket.status === "ACTIVE" && !ticket.isCheckedIn;
+  const canCheckIn = canCheckInTicket(ticket);
+  const canCancel = canCancelTicket(ticket);
 
   return (
     <div className="page ticket-detail-page">
