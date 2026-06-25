@@ -10,6 +10,10 @@ const useAuth = () => {
     error: store.error,
     login: store.login,
     register: store.register,
+    verifyEmail: store.verifyEmail,
+    resendVerificationEmail: store.resendVerificationEmail,
+    forgotPassword: store.forgotPassword,
+    resetPassword: store.resetPassword,
     logout: store.logout,
     clearError: store.clearError,
   };

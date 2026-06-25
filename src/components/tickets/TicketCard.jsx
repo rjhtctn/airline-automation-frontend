@@ -5,10 +5,11 @@ import Button from "../common/Button";
 import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
 import ROUTES from "../../constants/routes";
+import { canCheckInTicket, getCheckInWindowMessage } from "../../utils/ticketRules";
 
 const TicketCard = ({ ticket }) => {
-  const canCheckIn =
-    ticket.status === "ACTIVE" && !ticket.isCheckedIn;
+  const canCheckIn = canCheckInTicket(ticket);
+  const checkInMessage = getCheckInWindowMessage(ticket);
 
   return (
     <article className="ticket-card card card--elevated">
@@ -60,6 +61,9 @@ const TicketCard = ({ ticket }) => {
               Check-In Yap
             </Button>
           </Link>
+        )}
+        {!canCheckIn && checkInMessage && ticket.status === "ACTIVE" && !ticket.isCheckedIn && (
+          <span className="ticket-card__hint">{checkInMessage}</span>
         )}
         {ticket.isCheckedIn && (
           <Link to={ROUTES.PASSENGER.boardingPass(ticket.id)}>

@@ -9,6 +9,7 @@ import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
 import Button from "../../../components/common/Button";
 import ROUTES from "../../../constants/routes";
+import { mapReservation } from "../../../api/mappers";
 
 const AdminReservationDetailPage = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const AdminReservationDetailPage = () => {
   const fetchReservation = async () => {
     try {
       const response = await reservationApi.getById(id);
-      setReservation(response.data.data);
+      setReservation(mapReservation(response.data.data));
     } catch (err) {
       setError(err.response?.data?.message || "Rezervasyon yüklenemedi.");
     } finally {

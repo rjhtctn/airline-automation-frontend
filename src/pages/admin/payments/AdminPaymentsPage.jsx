@@ -6,6 +6,7 @@ import PaymentTable from "../../../components/admin/PaymentTable";
 import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
 import { formatPrice } from "../../../utils/formatPrice";
+import { mapPayments } from "../../../api/mappers";
 
 const AdminPaymentsPage = () => {
   const openConfirmDialog = useUiStore((s) => s.openConfirmDialog);
@@ -18,7 +19,7 @@ const AdminPaymentsPage = () => {
     setError(null);
     try {
       const response = await paymentApi.getAll();
-      setPayments(response.data.data || []);
+      setPayments(mapPayments(response.data.data || []));
     } catch (err) {
       setError(err.response?.data?.message || "Ödemeler yüklenemedi.");
     } finally {
@@ -33,7 +34,7 @@ const AdminPaymentsPage = () => {
   const handleRefund = (payment) => {
     openConfirmDialog({
       title: "Ödeme İadesi",
-      message: `${payment.reservationCode} rezervasyonu için ${formatPrice(payment.amount)} iade edilsin mi?`,
+      message: `${payment.reservationCode || payment.reservation?.reservationCode || "—"} rezervasyonu için ${formatPrice(payment.amount)} iade edilsin mi?`,
       confirmText: "İade Et",
       variant: "danger",
       onConfirm: async () => {

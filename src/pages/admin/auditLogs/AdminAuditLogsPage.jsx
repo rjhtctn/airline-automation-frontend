@@ -6,6 +6,7 @@ import ErrorMessage from "../../../components/common/ErrorMessage";
 import Modal from "../../../components/common/Modal";
 import Button from "../../../components/common/Button";
 import { formatDateTime } from "../../../utils/formatDate";
+import { mapAuditLogs } from "../../../api/mappers";
 
 const AdminAuditLogsPage = () => {
   const [logs, setLogs] = useState([]);
@@ -16,7 +17,7 @@ const AdminAuditLogsPage = () => {
   useEffect(() => {
     auditLogApi
       .getAll()
-      .then((res) => setLogs(res.data.data || []))
+      .then((res) => setLogs(mapAuditLogs(res.data.data || [])))
       .catch((err) =>
         setError(err.response?.data?.message || "Audit loglar yüklenemedi.")
       )

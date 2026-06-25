@@ -2,12 +2,26 @@ import axios from "axios";
 import tokenStorage from "../utils/tokenStorage";
 import API from "../constants/apiEndpoints";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+const AUTH_REFRESH_EXCLUDED_PATHS = [
+  API.AUTH.LOGIN,
+  API.AUTH.REGISTER,
+  API.AUTH.VERIFY_EMAIL,
+  API.AUTH.RESEND_VERIFICATION_EMAIL,
+  API.AUTH.FORGOT_PASSWORD,
+  API.AUTH.RESET_PASSWORD,
+];
+
+const isRefreshExcluded = (url = "") =>
+  AUTH_REFRESH_EXCLUDED_PATHS.some((path) => url.includes(path));
 
 // İstek interceptor — her isteğe access token ekler
 axiosClient.interceptors.request.use(
@@ -41,6 +55,10 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    if (!originalRequest || isRefreshExcluded(originalRequest.url)) {
+      return Promise.reject(error);
+    }
+
     // 401 ve daha önce denenmediyse
     if (error.response?.status === 401 && !originalRequest._retry) {
       const refreshToken = tokenStorage.getRefreshToken();
@@ -69,13 +87,15 @@ axiosClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Süresi geçmiş token header'da, refresh token body'de gönderilir
+        // Refresh token body'de gönderilir
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"}${API.AUTH.REFRESH_TOKEN}`,
+          `${API_BASE_URL}${API.AUTH.REFRESH_TOKEN}`,
           { refreshToken },
           {
             headers: {
-              Authorization: `Bearer ${expiredAccessToken}`,
+              Authorization: expiredAccessToken
+                ? `Bearer ${expiredAccessToken}`
+                : undefined,
               "Content-Type": "application/json",
             },
           }

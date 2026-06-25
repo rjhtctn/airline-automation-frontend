@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Plus } from "lucide-react";
 import useAdmin from "../../../hooks/useAdmin";
 import useUiStore from "../../../store/uiStore";
 import UserTable from "../../../components/admin/UserTable";
+import AdminCreateForm from "../../../components/admin/AdminCreateForm";
 import ErrorMessage from "../../../components/common/ErrorMessage";
+import Button from "../../../components/common/Button";
+import Modal from "../../../components/common/Modal";
 
 const AdminUsersPage = () => {
-  const { getUsers, updateUserStatus, loading, error } = useAdmin();
+  const { getUsers, createAdmin, updateUserStatus, loading, error, setError } =
+    useAdmin();
   const openConfirmDialog = useUiStore((s) => s.openConfirmDialog);
   const [users, setUsers] = useState([]);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -23,6 +29,13 @@ const AdminUsersPage = () => {
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleCreateAdmin = async (payload) => {
+    await createAdmin(payload);
+    toast.success("Admin kullanıcı oluşturuldu.");
+    setCreateOpen(false);
+    await fetchUsers();
+  };
 
   const handleToggleStatus = (user) => {
     const newStatus = !user.isActive;
@@ -50,6 +63,16 @@ const AdminUsersPage = () => {
             Sistemdeki kullanıcıları görüntüleyin ve yönetin
           </p>
         </div>
+        <Button
+          variant="accent"
+          onClick={() => {
+            setError(null);
+            setCreateOpen(true);
+          }}
+        >
+          <Plus size={16} />
+          Yeni Admin
+        </Button>
       </div>
 
       {error && <ErrorMessage message={error} />}
@@ -61,6 +84,19 @@ const AdminUsersPage = () => {
           onToggleStatus={handleToggleStatus}
         />
       </div>
+
+      <Modal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        title="Yeni Admin Oluştur"
+        size="lg"
+      >
+        <AdminCreateForm
+          onSubmit={handleCreateAdmin}
+          loading={loading}
+          error={error}
+        />
+      </Modal>
     </div>
   );
 };

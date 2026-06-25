@@ -9,6 +9,7 @@ import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
 import Button from "../../../components/common/Button";
 import ROUTES from "../../../constants/routes";
+import { mapTicket } from "../../../api/mappers";
 
 const AdminTicketDetailPage = () => {
   const { ticketNumber } = useParams();
@@ -20,7 +21,7 @@ const AdminTicketDetailPage = () => {
   const fetchTicket = async () => {
     try {
       const response = await ticketApi.getByTicketNumber(ticketNumber);
-      setTicket(response.data.data);
+      setTicket(mapTicket(response.data.data));
     } catch (err) {
       setError(err.response?.data?.message || "Bilet yüklenemedi.");
     } finally {

@@ -3,6 +3,7 @@ import ticketApi from "../../../api/ticketApi";
 import TicketTable from "../../../components/admin/TicketTable";
 import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
+import { mapTickets } from "../../../api/mappers";
 
 const AdminTicketsPage = () => {
   const [tickets, setTickets] = useState([]);
@@ -12,7 +13,7 @@ const AdminTicketsPage = () => {
   useEffect(() => {
     ticketApi
       .getAll()
-      .then((res) => setTickets(res.data.data || []))
+      .then((res) => setTickets(mapTickets(res.data.data || [])))
       .catch((err) =>
         setError(err.response?.data?.message || "Biletler yüklenemedi.")
       )

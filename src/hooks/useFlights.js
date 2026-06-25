@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import airportApi from "../api/airportApi";
 import flightApi from "../api/flightApi";
 import useFlightSearchStore from "../store/flightSearchStore";
+import { mapFlight, mapFlights } from "../api/mappers";
 
 const useFlights = () => {
   const searchParams = useFlightSearchStore((s) => s.searchParams);
@@ -46,14 +47,14 @@ const useFlights = () => {
 
       try {
         const payload = {
-          departureAirportId: Number(params.departureAirportId),
-          arrivalAirportId: Number(params.arrivalAirportId),
+          departureAirportId: params.departureAirportId,
+          arrivalAirportId: params.arrivalAirportId,
           departureDate: params.departureDate,
-          passengerCount: Number(params.passengerCount),
+          //passengerCount: Number(params.passengerCount),
         };
 
         const response = await flightApi.search(payload);
-        const flightResults = response.data.data || [];
+        const flightResults = mapFlights(response.data.data || []);
         setResults(flightResults);
         return flightResults;
       } catch (err) {
@@ -71,7 +72,7 @@ const useFlights = () => {
 
   const getFlightDetail = useCallback(async (id) => {
     const response = await flightApi.getById(id);
-    return response.data.data;
+    return mapFlight(response.data.data);
   }, []);
 
   useEffect(() => {

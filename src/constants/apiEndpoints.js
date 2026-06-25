@@ -5,12 +5,17 @@ const API = {
     REGISTER: "/api/auth/register",
     LOGOUT: "/api/auth/logout",
     REFRESH_TOKEN: "/api/auth/refresh-token",
+    VERIFY_EMAIL: "/api/auth/verify-email",
+    RESEND_VERIFICATION_EMAIL: "/api/auth/resend-verification-email",
+    FORGOT_PASSWORD: "/api/auth/forgot-password",
+    RESET_PASSWORD: "/api/auth/reset-password",
   },
 
   // Users
   USERS: {
     PROFILE: "/api/users/profile",
     LIST: "/api/users",
+    CREATE_ADMIN: "/api/users/admins",
     UPDATE_STATUS: (id) => `/api/users/${id}/status`,
   },
 

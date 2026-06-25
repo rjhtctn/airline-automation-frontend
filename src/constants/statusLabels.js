@@ -39,6 +39,8 @@ export const NOTIFICATION_TYPE_LABELS = {
   FLIGHT_CANCELLED: "Uçuş İptal Edildi",
   CHECKIN_COMPLETED: "Check-In Tamamlandı",
   TICKET_CANCELLED: "Bilet İptal Edildi",
+  RESERVATION_EXPIRED: "Rezervasyon Süresi Doldu",
+  TICKET_CREATED: "Bilet Oluşturuldu",
 };
 
 export const SEAT_CLASS_LABELS = {

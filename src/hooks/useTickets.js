@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import ticketApi from "../api/ticketApi";
+import { mapTicket, mapTickets } from "../api/mappers";
 
 const useTickets = () => {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ const useTickets = () => {
     setError(null);
     try {
       const response = await ticketApi.getMy();
-      return response.data.data || [];
+      return mapTickets(response.data.data || []);
     } catch (err) {
       const message =
         err.response?.data?.message || "Biletler yüklenemedi.";
@@ -26,7 +27,7 @@ const useTickets = () => {
     setError(null);
     try {
       const response = await ticketApi.getByTicketNumber(ticketNumber);
-      return response.data.data;
+      return mapTicket(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Bilet detayı yüklenemedi.";
@@ -39,7 +40,7 @@ const useTickets = () => {
 
   const getTicketById = useCallback(async (ticketId) => {
     const tickets = await getMyTickets();
-    const ticket = tickets.find((t) => t.id === Number(ticketId));
+    const ticket = tickets.find((t) => t.id === ticketId);
     if (!ticket) throw new Error("Bilet bulunamadı.");
     return ticket;
   }, [getMyTickets]);
@@ -49,7 +50,7 @@ const useTickets = () => {
     setError(null);
     try {
       const response = await ticketApi.cancel(id);
-      return response.data.data;
+      return mapTicket(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Bilet iptal edilemedi.";

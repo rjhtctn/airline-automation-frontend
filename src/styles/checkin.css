@@ -259,6 +259,28 @@
   margin-bottom: var(--space-6);
 }
 
+/*Yeni eklenen kod*/
+.checkin-page__lock-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  flex-wrap: wrap;
+}
+
+.checkin-page__lock-info strong {
+  font-weight: var(--font-bold);
+}
+/*Eklenen kod bitişi*/
+
+
 /* ── Seat Map ───────────────────────────────── */
 .seat-map__legend {
   display: flex;

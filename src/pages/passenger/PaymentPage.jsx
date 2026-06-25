@@ -59,7 +59,7 @@ const PaymentPage = () => {
 
   if (!reservation) return null;
 
-  if (reservation.status !== "PENDING") {
+  {/*if (reservation.status !== "PENDING") {
     return (
       <div className="page">
         <div className="card card--elevated">
@@ -72,7 +72,33 @@ const PaymentPage = () => {
         </div>
       </div>
     );
-  }
+  }*/}
+
+const expireTime = reservation.expireDate
+  ? new Date(reservation.expireDate).getTime()
+  : null;
+
+const isExpired =
+  Number.isFinite(expireTime) && expireTime < Date.now();
+
+if (reservation.status !== "PENDING" || isExpired) {
+  return (
+    <div className="page">
+      <div className="card card--elevated">
+        <ErrorMessage
+          message={
+            isExpired
+              ? "Bu rezervasyonun ödeme süresi dolmuş. Bu nedenle ödeme yapılamaz."
+              : `Bu rezervasyon ödeme için uygun değil. Durum: ${reservation.status}`
+          }
+        />
+        <Link to={ROUTES.PASSENGER.reservationDetail(reservation.id)}>
+          <Button variant="outline">Rezervasyon Detayına Dön</Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="page payment-page">

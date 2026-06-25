@@ -31,8 +31,8 @@ const ReservationDetailCard = ({ reservation }) => {
             <div>
               <dt>Güzergah</dt>
               <dd>
-                {flight.departureCity} ({flight.departureAirport}) →{" "}
-                {flight.arrivalCity} ({flight.arrivalAirport})
+                {flight.departureCity} ({flight.departureAirportName}) →{" "}
+                {flight.arrivalCity} ({flight.arrivalAirportName})
               </dd>
             </div>
             <div>

@@ -12,6 +12,9 @@ import AdminRoute from "../routes/AdminRoute";
 import HomePage from "../pages/public/HomePage";
 import LoginPage from "../pages/public/LoginPage";
 import RegisterPage from "../pages/public/RegisterPage";
+import VerifyEmailPage from "../pages/public/VerifyEmailPage";
+import ForgotPasswordPage from "../pages/public/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/public/ResetPasswordPage";
 import FlightSearchPage from "../pages/public/FlightSearchPage";
 import FlightDetailPage from "../pages/public/FlightDetailPage";
 import ReservationsPage from "../pages/passenger/ReservationsPage";
@@ -60,6 +63,9 @@ const AppRouter = () => {
         <Route element={<PublicRoute />}>
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+          <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmailPage />} />
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+          <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
         </Route>
       </Route>
 

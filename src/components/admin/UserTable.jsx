@@ -12,6 +12,16 @@ const UserTable = ({
   const columns = [
     { key: "fullName", title: "Ad Soyad" },
     { key: "email", title: "E-posta" },
+    {
+      key: "emailVerified",
+      title: "Doğrulama",
+      render: (val) => (
+        <Badge
+          label={val ? "Doğrulandı" : "Doğrulanmadı"}
+          colorClass={val ? "badge--paid" : "badge--pending"}
+        />
+      ),
+    },
     { key: "phoneNumber", title: "Telefon", render: (v) => v || "—" },
     {
       key: "role",

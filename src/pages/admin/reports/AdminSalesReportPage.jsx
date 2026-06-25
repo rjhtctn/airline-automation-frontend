@@ -8,6 +8,7 @@ import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
 import { formatDate } from "../../../utils/formatDate";
 import { formatPrice } from "../../../utils/formatPrice";
+import { mapSalesReport } from "../../../api/mappers";
 
 const getDefaultDates = () => {
   const end = new Date();
@@ -41,7 +42,7 @@ const AdminSalesReportPage = () => {
     setError(null);
     try {
       const response = await reportApi.getSales(startDate, endDate);
-      setReport(response.data.data);
+      setReport(mapSalesReport(response.data.data, startDate, endDate));
     } catch (err) {
       setError(err.response?.data?.message || "Satış raporu yüklenemedi.");
     } finally {

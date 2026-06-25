@@ -85,8 +85,8 @@ const FlightDetailPage = () => {
         <div>
           <h1 className="page-title">Uçuş Detayı</h1>
           <p className="page-subtitle">
-            {flight.flightNumber} — {flight.departureAirport.city} →{" "}
-            {flight.arrivalAirport.city}
+            {flight.flightNumber} — {flight.departureAirport?.city || flight.departureCity} →{" "}
+            {flight.arrivalAirport?.city || flight.arrivalCity}
           </p>
         </div>
       </div>

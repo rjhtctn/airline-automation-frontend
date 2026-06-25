@@ -10,6 +10,7 @@ import Button from "../../../components/common/Button";
 import Loader from "../../../components/common/Loader";
 import ErrorMessage from "../../../components/common/ErrorMessage";
 import ROUTES from "../../../constants/routes";
+import { mapFlight } from "../../../api/mappers";
 
 const STATUS_OPTIONS = [
   { value: "SCHEDULED", label: "Planlandı" },
@@ -29,8 +30,9 @@ const AdminFlightDetailPage = () => {
   const fetchFlight = async () => {
     try {
       const response = await flightApi.getById(id);
-      setFlight(response.data.data);
-      setStatus(response.data.data.status);
+      const mappedFlight = mapFlight(response.data.data);
+      setFlight(mappedFlight);
+      setStatus(mappedFlight.status);
     } catch (err) {
       setError(err.response?.data?.message || "Uçuş yüklenemedi.");
     } finally {
@@ -48,7 +50,7 @@ const AdminFlightDetailPage = () => {
     setUpdating(true);
     try {
       const response = await flightApi.updateStatus(id, status);
-      setFlight(response.data.data);
+      setFlight(mapFlight(response.data.data));
       toast.success("Uçuş durumu güncellendi.");
     } catch (err) {
       toast.error(err.response?.data?.message || "Durum güncellenemedi.");
@@ -83,16 +85,19 @@ const AdminFlightDetailPage = () => {
             <Badge status={flight.status} type="flight" />
           </p>
         </div>
-        <Link to={ROUTES.ADMIN.flightEdit(id)}>
-          <Button variant="outline">
-            <Pencil size={16} />
-            Düzenle
-          </Button>
-        </Link>
+        {flight.status !== "COMPLETED" && (
+          <Link to={ROUTES.ADMIN.flightEdit(id)}>
+            <Button variant="outline">
+              <Pencil size={16} />
+              Düzenle
+            </Button>
+          </Link>
+        )}
       </div>
 
       <FlightDetailCard flight={flight} />
 
+      {flight.status !== "COMPLETED" && (
       <div className="card admin-status-panel" style={{ marginTop: "var(--space-6)" }}>
         <h3 className="admin-status-panel__title">Uçuş Durumu Güncelle</h3>
         <div className="admin-status-panel__row">
@@ -113,6 +118,7 @@ const AdminFlightDetailPage = () => {
           </Button>
         </div>
       </div>
+      )}
     </div>
   );
 };

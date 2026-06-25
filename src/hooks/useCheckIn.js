@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import seatApi from "../api/seatApi";
 import checkinApi from "../api/checkinApi";
+import { mapCheckIn } from "../api/mappers";
 
 const useCheckIn = () => {
   const [loading, setLoading] = useState(false);
@@ -48,7 +49,7 @@ const useCheckIn = () => {
     setError(null);
     try {
       const response = await checkinApi.checkIn(ticketId, seatId);
-      return response.data.data;
+      return mapCheckIn(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Check-in tamamlanamadı.";
@@ -64,7 +65,7 @@ const useCheckIn = () => {
     setError(null);
     try {
       const response = await checkinApi.getBoardingPass(ticketId);
-      return response.data.data;
+      return mapCheckIn(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Biniş kartı yüklenemedi.";
@@ -80,7 +81,7 @@ const useCheckIn = () => {
     setError(null);
     try {
       const response = await checkinApi.cancelCheckIn(ticketId);
-      return response.data.data;
+      return mapCheckIn(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Check-in iptal edilemedi.";

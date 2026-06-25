@@ -6,7 +6,7 @@ import Input from "../common/Input";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
 import validators from "../../utils/validators";
-import { getDefaultRouteForRole } from "../../utils/roleUtils";
+import { removeEmptyValues } from "../../utils/objectUtils";
 import ROUTES from "../../constants/routes";
 
 const RegisterForm = () => {
@@ -50,19 +50,24 @@ const RegisterForm = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    const email = form.email.trim();
+
     try {
-      const payload = {
+      const payload = removeEmptyValues({
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
-        email: form.email.trim(),
+        email,
         password: form.password,
-        phoneNumber: form.phoneNumber.trim() || null,
-      };
+        phoneNumber: form.phoneNumber.trim(),
+      });
 
-      const data = await register(payload);
+      await register(payload);
 
-      toast.success(`Kayıt başarılı! Hoş geldiniz, ${data.fullName}!`);
-      navigate(getDefaultRouteForRole(data.role), { replace: true });
+      toast.success("Kayıt başarılı. Lütfen e-postanıza gelen kodu doğrulayın.");
+      navigate(ROUTES.VERIFY_EMAIL, {
+        replace: true,
+        state: { email },
+      });
     } catch {
       // Hata authStore'da tutulur
     }

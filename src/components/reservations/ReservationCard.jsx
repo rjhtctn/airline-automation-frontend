@@ -6,9 +6,22 @@ import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
 import ROUTES from "../../constants/routes";
 
+{/*const ReservationCard = ({ reservation }) => {
+  const { flight } = reservation;*/}
+
 const ReservationCard = ({ reservation }) => {
   const { flight } = reservation;
 
+  const expireTime = reservation.expireDate
+    ? new Date(reservation.expireDate).getTime()
+    : null;
+
+  const isExpired =
+    Number.isFinite(expireTime) && expireTime < Date.now();
+
+  const canPay = reservation.status === "PENDING" && !isExpired;
+
+  
   return (
     <article className="reservation-card card card--elevated">
       <div className="reservation-card__header">
@@ -50,9 +63,14 @@ const ReservationCard = ({ reservation }) => {
             Detay
           </Button>
         </Link>
-        {reservation.status === "PENDING" && (
+        {/*{reservation.status === "PENDING" && (
           <Link to={ROUTES.PASSENGER.payment(reservation.id)}>
-            <Button variant="accent" size="sm">
+            <Button variant="accent" size="sm">*/}
+
+        {/* Yeni yöntem: Süre aşımı (expireDate) kontrolü eklenmiş dinamik yapı */}    
+        {canPay && (
+          <Link to={ROUTES.PASSENGER.payment(reservation.id)}>
+            <Button variant="accent" size="sm">      
               Ödeme Yap
             </Button>
           </Link>

@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import reservationApi from "../api/reservationApi";
 import paymentApi from "../api/paymentApi";
+//import { mapPayment, mapReservation, mapReservations } from "../api/mappers";
+import {mapPaymentResult,mapReservation,mapReservations,} from "../api/mappers";
 
 const useReservations = () => {
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,7 @@ const useReservations = () => {
     setError(null);
     try {
       const response = await reservationApi.create(data);
-      return response.data.data;
+      return mapReservation(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Rezervasyon oluşturulamadı.";
@@ -27,7 +29,7 @@ const useReservations = () => {
     setError(null);
     try {
       const response = await reservationApi.getMy();
-      return response.data.data || [];
+      return mapReservations(response.data.data || []);
     } catch (err) {
       const message =
         err.response?.data?.message || "Rezervasyonlar yüklenemedi.";
@@ -43,7 +45,7 @@ const useReservations = () => {
     setError(null);
     try {
       const response = await reservationApi.getById(id);
-      return response.data.data;
+      return mapReservation(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Rezervasyon detayı yüklenemedi.";
@@ -59,7 +61,7 @@ const useReservations = () => {
     setError(null);
     try {
       const response = await reservationApi.cancel(id);
-      return response.data.data;
+      return mapReservation(response.data.data);
     } catch (err) {
       const message =
         err.response?.data?.message || "Rezervasyon iptal edilemedi.";
@@ -70,12 +72,12 @@ const useReservations = () => {
     }
   }, []);
 
-  const payReservation = useCallback(async (data) => {
+  /*const payReservation = useCallback(async (data) => {
     setLoading(true);
     setError(null);
     try {
       const response = await paymentApi.pay(data);
-      return response.data.data;
+      return mapPayment(response.data.data);
     } catch (err) {
       const message = err.response?.data?.message || "Ödeme başarısız.";
       setError(message);
@@ -83,7 +85,22 @@ const useReservations = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []);*/
+  //Güncelleme
+  const payReservation = useCallback(async (data) => {
+  setLoading(true);
+  setError(null);
+  try {
+    const response = await paymentApi.pay(data);
+    return mapPaymentResult(response.data.data);
+  } catch (err) {
+    const message = err.response?.data?.message || "Ödeme başarısız.";
+    setError(message);
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   return {
     loading,

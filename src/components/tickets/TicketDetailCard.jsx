@@ -1,4 +1,4 @@
-import { Plane, User, MapPin, Calendar, Armchair, DoorOpen } from "lucide-react";
+import { Plane, User, MapPin, Calendar, DoorOpen } from "lucide-react";
 import Badge from "../common/Badge";
 import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
