@@ -47,6 +47,19 @@ const useUserStore = create((set) => ({
     }
   },
 
+  updatePassword: async (data) => {
+    set({ loading: true, error: null });
+    try {
+      await userApi.updatePassword(data);
+      set({ loading: false });
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Şifre güncellenemedi.";
+      set({ error: message, loading: false });
+      throw error;
+    }
+  },
+
   clearError: () => set({ error: null }),
 }));
 

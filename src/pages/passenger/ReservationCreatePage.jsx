@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { ArrowLeft } from "lucide-react";
 import flightApi from "../../api/flightApi";
 import useReservations from "../../hooks/useReservations";
-import useFlightSearchStore from "../../store/flightSearchStore";
+import Select from "../../components/common/Select";
 import PassengerFormList from "../../components/reservations/PassengerFormList";
 import { createEmptyPassengers } from "../../utils/passengerFactory";
 import FlightDetailCard from "../../components/flights/FlightDetailCard";
@@ -29,17 +29,15 @@ const ReservationCreatePage = () => {
   const { flightId } = useParams();
   const navigate = useNavigate();
   const { createReservation, loading, error, setError } = useReservations();
-  const passengerCount = useFlightSearchStore(
-    (s) => s.searchParams.passengerCount
-  );
-
+  const [passengerCount, setPassengerCount] = useState(1);
   const [flight, setFlight] = useState(null);
   const [flightLoading, setFlightLoading] = useState(true);
   const [flightError, setFlightError] = useState(null);
   const [passengers, setPassengers] = useState(
-    createEmptyPassengers(passengerCount || 1)
+    createEmptyPassengers(1)
   );
   const [passengerErrors, setPassengerErrors] = useState({});
+  const [seatClass, setSeatClass] = useState("ECONOMY");
 
   useEffect(() => {
     const fetchFlight = async () => {
@@ -69,6 +67,17 @@ const ReservationCreatePage = () => {
     setError(null);
   };
 
+  const handlePassengerCountChange = (e) => {
+    const count = Number(e.target.value);
+    setPassengerCount(count);
+    setPassengers((prev) => {
+      if (count > prev.length) {
+        return [...prev, ...createEmptyPassengers(count - prev.length)];
+      }
+      return prev.slice(0, count);
+    });
+  };
+
   const validateAll = () => {
     const allErrors = {};
     passengers.forEach((p, i) => {
@@ -86,12 +95,12 @@ const ReservationCreatePage = () => {
     try {
       const payload = {
         flightId,
+        seatClass,
         passengers: passengers.map((p) =>
           removeEmptyValues({
             firstName: p.firstName.trim(),
             lastName: p.lastName.trim(),
             nationalId: p.nationalId.trim(),
-            passportNumber: p.passportNumber.trim(),
             dateOfBirth: p.dateOfBirth,
             gender: p.gender,
           })
@@ -114,8 +123,8 @@ const ReservationCreatePage = () => {
     return (
       <div className="page">
         <ErrorMessage message={flightError} />
-        <Link to={ROUTES.FLIGHT_SEARCH}>
-          <Button variant="outline">Uçuş Aramaya Dön</Button>
+        <Link to={ROUTES.HOME}>
+          <Button variant="outline">Ana Sayfaya Dön</Button>
         </Link>
       </div>
     );
@@ -140,10 +149,36 @@ const ReservationCreatePage = () => {
         </div>
       </div>
 
-      <FlightDetailCard flight={flight} passengerCount={passengers.length} />
+      <FlightDetailCard flight={flight} passengerCount={passengerCount} />
 
       <form onSubmit={handleSubmit} className="reservation-create-page__form">
         <ErrorMessage message={error} />
+
+        <div className="card card--elevated" style={{ marginBottom: "2rem", padding: "1.5rem", display: "flex", gap: "1rem" }}>
+          <div style={{ flex: 1 }}>
+            <Select
+              label="Yolcu Sayısı Seçin"
+              value={String(passengerCount)}
+              onChange={handlePassengerCountChange}
+              options={Array.from({ length: 9 }, (_, i) => ({
+                value: String(i + 1),
+                label: `${i + 1} Yolcu`,
+              }))}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <Select
+              label="Koltuk Sınıfı Seçin"
+              value={seatClass}
+              onChange={(e) => setSeatClass(e.target.value)}
+              options={[
+                { value: "ECONOMY", label: "Ekonomi" },
+                { value: "BUSINESS", label: "Business" },
+                { value: "FIRST_CLASS", label: "First Class" },
+              ]}
+            />
+          </div>
+        </div>
 
         <PassengerFormList
           passengers={passengers}
@@ -151,8 +186,13 @@ const ReservationCreatePage = () => {
           onChange={handlePassengerChange}
         />
 
-        <Button type="submit" variant="accent" size="lg" loading={loading}>
-          Rezervasyon Oluştur
+        <Button type="submit" variant="accent" size="lg" loading={loading} fullWidth>
+          Rezervasyon Oluştur 
+          {flight && ` (${(
+            Number(flight.basePrice) * 
+            (seatClass === "FIRST_CLASS" ? 4 : seatClass === "BUSINESS" ? 2.5 : 1) * 
+            passengerCount
+          ).toLocaleString("tr-TR")} ₺)`}
         </Button>
       </form>
     </div>

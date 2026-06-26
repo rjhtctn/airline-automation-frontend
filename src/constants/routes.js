@@ -6,7 +6,7 @@ const ROUTES = {
   VERIFY_EMAIL: "/verify-email",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
-  FLIGHT_SEARCH: "/flight-search",
+
   FLIGHT_DETAIL: "/flight-detail/:id",
   flightDetail: (id) => `/flight-detail/${id}`,
 
@@ -33,6 +33,7 @@ const ROUTES = {
 
   // Admin
   ADMIN: {
+    PROFILE: "/admin/profile",
     DASHBOARD: "/admin/dashboard",
     USERS: "/admin/users",
     AIRPORTS: "/admin/airports",

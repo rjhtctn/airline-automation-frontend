@@ -5,7 +5,6 @@ const useFlightSearchStore = create((set) => ({
     departureAirportId: "",
     arrivalAirportId: "",
     departureDate: "",
-    passengerCount: 1,
   },
   results: [],
   searched: false,

@@ -5,10 +5,7 @@ import Input from "../common/Input";
 import Button from "../common/Button";
 import validators from "../../utils/validators";
 
-const PASSENGER_OPTIONS = Array.from({ length: 9 }, (_, i) => ({
-  value: String(i + 1),
-  label: `${i + 1} Yolcu`,
-}));
+
 
 const FlightSearchForm = ({
   airports = [],
@@ -20,8 +17,6 @@ const FlightSearchForm = ({
   const [form, setForm] = useState({
     departureAirportId: initialValues.departureAirportId || "",
     arrivalAirportId: initialValues.arrivalAirportId || "",
-    departureDate: initialValues.departureDate || "",
-    passengerCount: String(initialValues.passengerCount || 1),
   });
   const [errors, setErrors] = useState({});
 
@@ -48,8 +43,6 @@ const FlightSearchForm = ({
     const newErrors = {
       departureAirportId: validators.required(form.departureAirportId),
       arrivalAirportId: validators.required(form.arrivalAirportId),
-      departureDate: validators.date(form.departureDate),
-      passengerCount: validators.passengerCount(form.passengerCount),
     };
 
     if (
@@ -75,8 +68,6 @@ const FlightSearchForm = ({
     onSearch({
       departureAirportId: form.departureAirportId,
       arrivalAirportId: form.arrivalAirportId,
-      departureDate: form.departureDate,
-      passengerCount: Number(form.passengerCount),
     });
   };
 
@@ -119,27 +110,6 @@ const FlightSearchForm = ({
           required
         />
 
-        <Input
-          label="Tarih"
-          name="departureDate"
-          type="date"
-          value={form.departureDate}
-          onChange={handleChange}
-          error={errors.departureDate}
-          min={new Date().toISOString().split("T")[0]}
-          required
-        />
-
-        <Select
-          label="Yolcu Sayısı"
-          name="passengerCount"
-          value={form.passengerCount}
-          onChange={handleChange}
-          options={PASSENGER_OPTIONS}
-          error={errors.passengerCount}
-          placeholder="Yolcu sayısı"
-          required
-        />
       </div>
 
       <Button

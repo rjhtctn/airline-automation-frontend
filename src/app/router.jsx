@@ -15,7 +15,7 @@ import RegisterPage from "../pages/public/RegisterPage";
 import VerifyEmailPage from "../pages/public/VerifyEmailPage";
 import ForgotPasswordPage from "../pages/public/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/public/ResetPasswordPage";
-import FlightSearchPage from "../pages/public/FlightSearchPage";
+
 import FlightDetailPage from "../pages/public/FlightDetailPage";
 import ReservationsPage from "../pages/passenger/ReservationsPage";
 import ReservationCreatePage from "../pages/passenger/ReservationCreatePage";
@@ -29,6 +29,7 @@ import ProfilePage from "../pages/passenger/ProfilePage";
 import NotificationsPage from "../pages/passenger/NotificationsPage";
 import ReservationQueryPage from "../pages/passenger/ReservationQueryPage";
 import DashboardPage from "../pages/admin/DashboardPage";
+import AdminProfilePage from "../pages/admin/AdminProfilePage";
 import AdminUsersPage from "../pages/admin/users/AdminUsersPage";
 import AdminAirportsPage from "../pages/admin/airports/AdminAirportsPage";
 import AdminAirportCreatePage from "../pages/admin/airports/AdminAirportCreatePage";
@@ -57,7 +58,7 @@ const AppRouter = () => {
       {/* Public routes */}
       <Route element={<PublicLayout />}>
         <Route path={ROUTES.HOME} element={<HomePage />} />
-        <Route path={ROUTES.FLIGHT_SEARCH} element={<FlightSearchPage />} />
+
         <Route path={ROUTES.FLIGHT_DETAIL} element={<FlightDetailPage />} />
 
         <Route element={<PublicRoute />}>
@@ -110,6 +111,7 @@ const AppRouter = () => {
       {/* Admin routes */}
       <Route element={<AdminRoute />}>
         <Route element={<AdminLayout />}>
+          <Route path={ROUTES.ADMIN.PROFILE} element={<AdminProfilePage />} />
           <Route path={ROUTES.ADMIN.DASHBOARD} element={<DashboardPage />} />
           <Route path={ROUTES.ADMIN.USERS} element={<AdminUsersPage />} />
 

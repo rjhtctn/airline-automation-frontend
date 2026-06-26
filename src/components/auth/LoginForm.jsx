@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
@@ -16,6 +16,14 @@ const LoginForm = () => {
 
   const [form, setForm] = useState({ email: location.state?.email || "", password: "" });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    clearError();
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.get("reason") === "inactive") {
+      toast.error("Hesabınız askıya alınmıştır. Lütfen yönetici ile iletişime geçin.", { duration: 5000 });
+    }
+  }, [clearError, location.search]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

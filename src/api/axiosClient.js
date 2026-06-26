@@ -59,6 +59,29 @@ axiosClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // 403 ve kullanıcı pasif ise otomatik logout yap
+    if (
+      error.response?.status === 403 &&
+      error.response?.data?.message === "Kullanici pasif durumda."
+    ) {
+      const refreshToken = tokenStorage.getRefreshToken();
+      if (refreshToken) {
+        // Fire and forget logout
+        axios.post(
+          `${API_BASE_URL}${API.AUTH.LOGOUT}`,
+          { refreshToken },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).catch(() => {});
+      }
+      tokenStorage.clear();
+      window.location.href = "/login?reason=inactive";
+      return Promise.reject(error);
+    }
+
     // 401 ve daha önce denenmediyse
     if (error.response?.status === 401 && !originalRequest._retry) {
       const refreshToken = tokenStorage.getRefreshToken();

@@ -44,9 +44,14 @@ const AdminFlightsPage = () => {
       confirmText: "Sil",
       variant: "danger",
       onConfirm: async () => {
-        await flightApi.delete(flight.id);
-        toast.success("Uçuş silindi.");
-        await fetchFlights();
+        try {
+          await flightApi.delete(flight.id);
+          toast.success("Uçuş silindi.");
+          await fetchFlights();
+        } catch (err) {
+          toast.error(err.response?.data?.message || "Uçuş silinirken bir hata oluştu.");
+          throw err;
+        }
       },
     });
   };

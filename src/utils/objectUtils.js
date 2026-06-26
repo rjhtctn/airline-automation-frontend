@@ -1,4 +1,6 @@
 export const removeEmptyValues = (obj) =>
   Object.fromEntries(
-    Object.entries(obj).filter(([, value]) => value !== "" && value !== null && value !== undefined)
+    Object.entries(obj)
+      .map(([key, value]) => [key, value === "" ? null : value])
+      .filter(([, value]) => value !== undefined)
   );

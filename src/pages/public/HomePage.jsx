@@ -1,5 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { Plane, Search, Shield } from "lucide-react";
+import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import useFlights from "../../hooks/useFlights";
 import useFlightSearchStore from "../../store/flightSearchStore";
@@ -7,18 +9,35 @@ import { getDefaultRouteForRole } from "../../utils/roleUtils";
 import ROUTES from "../../constants/routes";
 import Button from "../../components/common/Button";
 import FlightSearchForm from "../../components/flights/FlightSearchForm";
-import Loader from "../../components/common/Loader";
-import { Link } from "react-router-dom";
+import FlightList from "../../components/flights/FlightList";
 
 const HomePage = () => {
-  const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
-  const { airports, airportsLoading } = useFlights();
-  const setSearchParams = useFlightSearchStore((s) => s.setSearchParams);
+  const {
+    airports,
+    airportsLoading,
+    searchFlights,
+    results,
+    searched,
+    loading,
+    error,
+  } = useFlights();
+  const searchParams = useFlightSearchStore((s) => s.searchParams);
 
-  const handleSearch = (params) => {
-    setSearchParams(params);
-    navigate(ROUTES.FLIGHT_SEARCH, { state: { autoSearch: true } });
+  const resultsRef = useRef(null);
+
+  const handleSearch = async (params) => {
+    try {
+      const flights = await searchFlights(params);
+      if (flights.length) {
+        toast.success(`${flights.length} uçuş bulundu.`);
+      }
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } catch {
+      // Hata store'da
+    }
   };
 
   return (
@@ -40,15 +59,15 @@ const HomePage = () => {
           </p>
 
           <div className="home-hero__search card card--elevated">
-            {airportsLoading && !airports.length ? (
-              <Loader text="Havaalanları yükleniyor..." />
-            ) : (
+            <div style={airportsLoading && !airports.length ? { pointerEvents: "none", opacity: 0.6 } : {}}>
               <FlightSearchForm
                 airports={airports}
+                initialValues={searchParams}
                 onSearch={handleSearch}
+                loading={loading || airportsLoading}
                 compact
               />
-            )}
+            </div>
           </div>
 
           <div className="home-hero__actions">
@@ -69,11 +88,23 @@ const HomePage = () => {
         </div>
       </div>
 
+      {searched && (
+        <div className="container" style={{ marginTop: "2rem", marginBottom: "2rem" }} ref={resultsRef}>
+          <FlightList
+            flights={results}
+            loading={loading}
+            error={error}
+            searched={searched}
+            passengerCount={searchParams.passengerCount}
+          />
+        </div>
+      )}
+
       <div className="home-features container">
         <div className="home-feature card">
           <Search size={28} className="home-feature__icon" />
           <h3>Uçuş Arama</h3>
-          <p>Kalkış, varış ve tarihe göre uygun uçuşları listeleyin.</p>
+          <p>Kalkış ve varış noktalarına göre uygun uçuşları listeleyin.</p>
         </div>
         <div className="home-feature card">
           <Plane size={28} className="home-feature__icon" />

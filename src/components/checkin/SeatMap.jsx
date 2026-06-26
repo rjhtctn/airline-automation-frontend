@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SeatItem from "./SeatItem";
 import { SEAT_CLASS_LABELS } from "../../constants/statusLabels";
 
@@ -22,9 +23,15 @@ const groupSeatsByRow = (seats) => {
 };
 
 const SeatMap = ({ seats = [], selectedSeatId, onSelectSeat }) => {
-  const rows = groupSeatsByRow(seats);
-
+  const [selectedClass, setSelectedClass] = useState("ALL");
   const classSet = [...new Set(seats.map((s) => s.seatClass))];
+
+  const filteredSeats =
+    selectedClass === "ALL"
+      ? seats
+      : seats.filter((s) => s.seatClass === selectedClass);
+
+  const rows = groupSeatsByRow(filteredSeats);
 
   return (
     <div className="seat-map">
@@ -45,10 +52,26 @@ const SeatMap = ({ seats = [], selectedSeatId, onSelectSeat }) => {
 
       {classSet.length > 0 && (
         <div className="seat-map__classes">
+          <button
+            type="button"
+            className={`seat-map__class-badge ${
+              selectedClass === "ALL" ? "seat-map__class-badge--active" : ""
+            }`}
+            onClick={() => setSelectedClass("ALL")}
+          >
+            Tümü
+          </button>
           {classSet.map((cls) => (
-            <span key={cls} className="seat-map__class-badge">
+            <button
+              key={cls}
+              type="button"
+              className={`seat-map__class-badge ${
+                selectedClass === cls ? "seat-map__class-badge--active" : ""
+              }`}
+              onClick={() => setSelectedClass(cls)}
+            >
               {SEAT_CLASS_LABELS[cls] || cls}
-            </span>
+            </button>
           ))}
         </div>
       )}

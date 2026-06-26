@@ -8,7 +8,6 @@ import Button from "../common/Button";
 
 const PUBLIC_LINKS = [
   { to: ROUTES.HOME, label: "Ana Sayfa" },
-  { to: ROUTES.FLIGHT_SEARCH, label: "Uçuş Ara" },
 ];
 
 const Header = ({ variant = "public" }) => {
@@ -56,6 +55,12 @@ const Header = ({ variant = "public" }) => {
         </button>
 
         <nav className={`header__nav ${mobileOpen ? "header__nav--open" : ""}`}>
+          {variant !== "public" && (
+            <Link to={ROUTES.HOME} className="header__link" onClick={closeMobile}>
+              Ana Sayfa
+            </Link>
+          )}
+
           {variant === "public" &&
             PUBLIC_LINKS.map(({ to, label }) => (
               <Link

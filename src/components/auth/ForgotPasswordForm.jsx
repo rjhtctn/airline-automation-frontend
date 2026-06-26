@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
@@ -13,6 +13,10 @@ const ForgotPasswordForm = () => {
   const { forgotPassword, loading, error, clearError } = useAuth();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

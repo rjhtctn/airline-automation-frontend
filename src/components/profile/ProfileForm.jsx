@@ -4,6 +4,8 @@ import Input from "../common/Input";
 import Select from "../common/Select";
 import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
+import EmailChangeModal from "./EmailChangeModal";
+import PasswordChangeModal from "./PasswordChangeModal";
 import validators from "../../utils/validators";
 import { getRoleLabel } from "../../utils/roleUtils";
 import { removeEmptyValues } from "../../utils/objectUtils";
@@ -20,12 +22,13 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
     lastName: profile?.lastName || "",
     phoneNumber: profile?.phoneNumber || "",
     nationalId: profile?.passengerProfile?.nationalId || "",
-    passportNumber: profile?.passengerProfile?.passportNumber || "",
     dateOfBirth: profile?.passengerProfile?.dateOfBirth?.split("T")[0] || "",
     gender: profile?.passengerProfile?.gender || "",
     nationality: profile?.passengerProfile?.nationality || "",
   });
   const [errors, setErrors] = useState({});
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -34,7 +37,6 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
         lastName: profile.lastName || "",
         phoneNumber: profile.phoneNumber || "",
         nationalId: profile.passengerProfile?.nationalId || "",
-        passportNumber: profile.passengerProfile?.passportNumber || "",
         dateOfBirth: profile.passengerProfile?.dateOfBirth?.split("T")[0] || "",
         gender: profile.passengerProfile?.gender || "",
         nationality: profile.passengerProfile?.nationality || "",
@@ -43,7 +45,10 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
   }, [profile]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    if (name === "nationalId") {
+      value = value.replace(/\D/g, "").slice(0, 11);
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: null }));
   };
@@ -74,7 +79,6 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
         phoneNumber: form.phoneNumber.trim(),
         passengerProfile: removeEmptyValues({
           nationalId: form.nationalId.trim(),
-          passportNumber: form.passportNumber.trim(),
           dateOfBirth: form.dateOfBirth,
           gender: form.gender,
           nationality: form.nationality.trim(),
@@ -84,23 +88,34 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
   };
 
   return (
-    <form className="profile-form" onSubmit={handleSubmit} noValidate>
-      <div className="profile-form__readonly card">
+    <>
+      <form className="profile-form" onSubmit={handleSubmit} noValidate>
+        <div className="profile-form__readonly card">
         <div className="profile-form__avatar">
           <User size={32} />
         </div>
         <div>
           <strong>{profile?.fullName}</strong>
-          <p>{profile?.email}</p>
-          <span className="profile-form__role">
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "0.25rem" }}>
+            <p style={{ margin: 0 }}>{profile?.email}</p>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setIsEmailModalOpen(true)}>
+                Değiştir
+              </Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => setIsPasswordModalOpen(true)}>
+                Şifre Değiştir
+              </Button>
+            </div>
+          </div>
+          <span className="profile-form__role" style={{ marginTop: "0.5rem", display: "inline-block" }}>
             {getRoleLabel(profile?.role)}
           </span>
+          </div>
         </div>
-      </div>
 
-      <ErrorMessage message={error} />
+        <ErrorMessage message={error} />
 
-      <div className="profile-form__grid">
+        <div className="profile-form__grid">
         <Input
           label="Ad"
           name="firstName"
@@ -133,12 +148,7 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
           onChange={handleChange}
           error={errors.nationalId}
           placeholder="11 haneli"
-        />
-        <Input
-          label="Pasaport No"
-          name="passportNumber"
-          value={form.passportNumber}
-          onChange={handleChange}
+          maxLength={11}
         />
         <Input
           label="Doğum Tarihi"
@@ -164,11 +174,23 @@ const ProfileForm = ({ profile, onSave, loading = false, error = null }) => {
         />
       </div>
 
-      <Button type="submit" variant="primary" loading={loading}>
-        <Save size={16} />
-        Profili Güncelle
-      </Button>
-    </form>
+        <Button type="submit" variant="primary" loading={loading}>
+          <Save size={16} />
+          Profili Güncelle
+        </Button>
+      </form>
+
+      <EmailChangeModal
+        open={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        onSuccess={() => window.location.reload()}
+      />
+
+      <PasswordChangeModal
+        open={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
+    </>
   );
 };
 

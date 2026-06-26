@@ -1,6 +1,6 @@
-export const ROLES = {
-  PASSENGER: "PASSENGER",
+const ROLES = {
   ADMIN: "ADMIN",
+  PASSENGER: "PASSENGER",
 };
 
 export default ROLES;

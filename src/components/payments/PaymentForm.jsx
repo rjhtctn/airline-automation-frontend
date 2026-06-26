@@ -39,26 +39,7 @@ const PaymentForm = ({ reservationId, onPay, loading = false, error = null }) =>
     setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
-  //Eski kod
-  /*
-  const validate = () => {
-    const newErrors = {
-      cardHolderName: validators.required(form.cardHolderName),
-      cardNumber: validators.cardNumber(form.cardNumber),
-      expireMonth: validators.expireMonth(form.expireMonth),
-      expireYear: validators.expireYear(form.expireYear),
-      cvv: validators.cvv(form.cvv),
-      paymentMethod: validators.required(form.paymentMethod),
-    };
-
-    const filtered = Object.fromEntries(
-      Object.entries(newErrors).filter(([, v]) => v)
-    );
-    setErrors(filtered);
-    return Object.keys(filtered).length === 0;
-  };
-*/
-//Yeni eklenen validate fonksiyonu
+  const [isSubmitting, setIsSubmitting] = useState(false);
 const validate = () => {
   const expireMonthError = validators.expireMonth(form.expireMonth);
   const expireYearError = validators.expireYear(form.expireYear);
@@ -83,21 +64,24 @@ const validate = () => {
   setErrors(filtered);
   return Object.keys(filtered).length === 0;
 };
-//----------
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting || loading) return;
     if (!validate()) return;
 
-    onPay({
-      reservationId,
-      cardHolderName: form.cardHolderName.trim(),
-      //cardNumber: form.cardNumber.replace(/\s/g, ""),
-      cardNumber: form.cardNumber.replace(/[\s-]/g, ""),//güncellendi
-      expiryDate: `${form.expireMonth}/${form.expireYear}`,
-      cvv: form.cvv,
-      paymentMethod: form.paymentMethod,
-    });
+    setIsSubmitting(true);
+    try {
+      await onPay({
+        reservationId,
+        cardHolderName: form.cardHolderName.trim(),
+        cardNumber: form.cardNumber.replace(/[\s-]/g, ""),
+        expiryDate: `${form.expireMonth}/${form.expireYear}`,
+        cvv: form.cvv,
+        paymentMethod: form.paymentMethod,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -178,7 +162,7 @@ const validate = () => {
         />
       </div>
 
-      <Button type="submit" variant="accent" size="lg" fullWidth loading={loading}>
+      <Button type="submit" variant="accent" size="lg" fullWidth loading={loading || isSubmitting}>
         Ödemeyi Tamamla
       </Button>
     </form>

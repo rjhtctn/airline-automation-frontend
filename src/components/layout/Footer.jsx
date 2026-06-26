@@ -22,7 +22,6 @@ const Footer = () => {
           <div className="footer__group">
             <h4>Keşfet</h4>
             <Link to={ROUTES.HOME}>Ana Sayfa</Link>
-            <Link to={ROUTES.FLIGHT_SEARCH}>Uçuş Ara</Link>
           </div>
           <div className="footer__group">
             <h4>Hesap</h4>

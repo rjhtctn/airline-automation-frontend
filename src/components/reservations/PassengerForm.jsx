@@ -16,8 +16,13 @@ const PassengerForm = ({
   const prefix = `passenger-${index}`;
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     const field = name.replace(`${prefix}-`, "");
+    
+    if (field === "nationalId") {
+      value = value.replace(/\D/g, "").slice(0, 11);
+    }
+
     onChange(index, field, value);
   };
 
@@ -52,15 +57,7 @@ const PassengerForm = ({
           error={errors.nationalId}
           placeholder="11 haneli"
           hint="Opsiyonel"
-        />
-        <Input
-          label="Pasaport No"
-          name={`${prefix}-passportNumber`}
-          value={passenger.passportNumber}
-          onChange={handleChange}
-          error={errors.passportNumber}
-          placeholder="Pasaport numarası"
-          hint="Opsiyonel"
+          maxLength={11}
         />
         <Input
           label="Doğum Tarihi"

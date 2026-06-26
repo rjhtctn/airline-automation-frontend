@@ -12,6 +12,7 @@ import {
   PieChart,
   ScrollText,
   X,
+  User,
 } from "lucide-react";
 import useUiStore from "../../store/uiStore";
 import ROUTES from "../../constants/routes";
@@ -20,6 +21,7 @@ const NAV_GROUPS = [
   {
     label: "Genel",
     items: [
+      { to: ROUTES.ADMIN.PROFILE, label: "Profilim", icon: User },
       { to: ROUTES.ADMIN.DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
       { to: ROUTES.ADMIN.USERS, label: "Kullanıcılar", icon: Users },
     ],

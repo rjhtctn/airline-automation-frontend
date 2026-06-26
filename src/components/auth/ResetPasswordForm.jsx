@@ -7,11 +7,12 @@ import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
 import validators from "../../utils/validators";
 import ROUTES from "../../constants/routes";
+import useCountdown from "../../hooks/useCountdown";
 
 const ResetPasswordForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { resetPassword, loading, error, clearError } = useAuth();
+  const { resetPassword, forgotPassword, loading, error, clearError } = useAuth();
   const [form, setForm] = useState({
     email: location.state?.email || "",
     otp: "",
@@ -19,11 +20,15 @@ const ResetPasswordForm = () => {
   });
   const [errors, setErrors] = useState({});
 
+  const { timeLeft, formattedTime, isFinished, start } = useCountdown(60);
+
   useEffect(() => {
+    clearError();
     if (location.state?.email) {
       setForm((prev) => ({ ...prev, email: location.state.email }));
+      start(); // Gelen sayfadan e-posta varsa direkt sayacı başlat
     }
-  }, [location.state?.email]);
+  }, [location.state?.email, start, clearError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +59,25 @@ const ResetPasswordForm = () => {
       await resetPassword(form.email.trim(), form.otp, form.newPassword);
       toast.success("Şifreniz güncellendi. Yeni şifrenizle giriş yapabilirsiniz.");
       navigate(ROUTES.LOGIN, { replace: true });
+    } catch {
+      // Hata authStore'da tutulur
+    }
+  };
+
+  const handleResend = async () => {
+    // Burada useAuth içerisinden forgotPassword metodunu import edip çağırmamız gerekiyor
+    // Fakat useAuth'dan destruction yapmadık. resetPassword var, forgotPassword'ü de alalım.
+    // Wait, let's fix destruction in the next chunk.
+    const emailError = validators.email(form.email);
+    if (emailError) {
+      setErrors((prev) => ({ ...prev, email: emailError }));
+      return;
+    }
+
+    try {
+      await forgotPassword(form.email.trim());
+      toast.success("Sıfırlama kodu tekrar gönderildi.");
+      start(); // Başarılı olunca sayacı tekrar başlat
     } catch {
       // Hata authStore'da tutulur
     }
@@ -103,10 +127,22 @@ const ResetPasswordForm = () => {
         Şifreyi Güncelle
       </Button>
 
+      <Button
+        type="button"
+        variant="outline"
+        fullWidth
+        loading={loading}
+        onClick={handleResend}
+        disabled={!isFinished}
+        style={{ marginTop: '0.5rem' }}
+      >
+        {isFinished ? "Kodu Tekrar Gönder" : `Kodu Tekrar Gönder (${formattedTime})`}
+      </Button>
+
       <p className="auth-form__footer">
-        Kodu almadınız mı?{" "}
-        <Link to={ROUTES.FORGOT_PASSWORD} className="auth-form__link">
-          Tekrar kod isteyin
+        Şifrenizi hatırladınız mı?{" "}
+        <Link to={ROUTES.LOGIN} className="auth-form__link">
+          Giriş yapın
         </Link>
       </p>
     </form>

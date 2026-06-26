@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
@@ -21,6 +21,10 @@ const RegisterForm = () => {
     phoneNumber: "",
   });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

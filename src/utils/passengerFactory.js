@@ -2,7 +2,6 @@ const EMPTY_PASSENGER = {
   firstName: "",
   lastName: "",
   nationalId: "",
-  passportNumber: "",
   dateOfBirth: "",
   gender: "",
 };

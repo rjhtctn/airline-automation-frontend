@@ -11,9 +11,10 @@ const API = {
     RESET_PASSWORD: "/api/auth/reset-password",
   },
 
-  // Users
   USERS: {
     PROFILE: "/api/users/profile",
+    EMAIL_REQUEST: "/api/users/profile/email/request",
+    EMAIL_CONFIRM: "/api/users/profile/email/confirm",
     LIST: "/api/users",
     CREATE_ADMIN: "/api/users/admins",
     UPDATE_STATUS: (id) => `/api/users/${id}/status`,

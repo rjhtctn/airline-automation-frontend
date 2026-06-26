@@ -9,6 +9,7 @@ const useUser = () => {
     error: store.error,
     fetchProfile: store.fetchProfile,
     updateProfile: store.updateProfile,
+    updatePassword: store.updatePassword,
     clearError: store.clearError,
   };
 };

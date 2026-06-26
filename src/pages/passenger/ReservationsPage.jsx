@@ -29,7 +29,7 @@ const ReservationsPage = () => {
             Tüm rezervasyonlarınızı görüntüleyin ve yönetin
           </p>
         </div>
-        <Link to={ROUTES.FLIGHT_SEARCH}>
+        <Link to={ROUTES.HOME}>
           <Button variant="accent" size="sm">
             <Search size={16} />
             Yeni Uçuş Ara
@@ -47,7 +47,7 @@ const ReservationsPage = () => {
             title="Henüz rezervasyonunuz yok"
             text="Uçuş arayarak ilk rezervasyonunuzu oluşturabilirsiniz."
             actionLabel="Uçuş Ara"
-            onAction={() => navigate(ROUTES.FLIGHT_SEARCH)}
+            onAction={() => navigate(ROUTES.HOME)}
           />
         </div>
       )}

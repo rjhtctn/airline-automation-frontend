@@ -7,6 +7,7 @@ import Button from "../common/Button";
 import ErrorMessage from "../common/ErrorMessage";
 import validators from "../../utils/validators";
 import ROUTES from "../../constants/routes";
+import useCountdown from "../../hooks/useCountdown";
 
 const VerifyEmailForm = () => {
   const location = useLocation();
@@ -20,11 +21,15 @@ const VerifyEmailForm = () => {
   });
   const [errors, setErrors] = useState({});
 
+  const { timeLeft, formattedTime, isFinished, start } = useCountdown(60);
+
   useEffect(() => {
+    clearError();
     if (location.state?.email) {
       setForm((prev) => ({ ...prev, email: location.state.email }));
+      start(); // Gelen sayfadan e-posta varsa direkt sayacı başlat
     }
-  }, [location.state?.email]);
+  }, [location.state?.email, start, clearError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,6 +75,7 @@ const VerifyEmailForm = () => {
     try {
       await resendVerificationEmail(email);
       toast.success("Doğrulama kodu tekrar gönderildi.");
+      start(); // Başarılı olunca sayacı tekrar başlat
     } catch {
       // Hata authStore'da tutulur
     }
@@ -113,8 +119,9 @@ const VerifyEmailForm = () => {
         fullWidth
         loading={loading}
         onClick={handleResend}
+        disabled={!isFinished}
       >
-        Kodu Tekrar Gönder
+        {isFinished ? "Kodu Tekrar Gönder" : `Kodu Tekrar Gönder (${formattedTime})`}
       </Button>
 
       <p className="auth-form__footer">
