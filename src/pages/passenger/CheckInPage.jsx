@@ -11,6 +11,7 @@ import CheckInSummary from "../../components/checkin/CheckInSummary";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import Button from "../../components/common/Button";
+import Select from "../../components/common/Select";
 import ROUTES from "../../constants/routes";
 
 //Yeni eklenen kod
@@ -41,10 +42,10 @@ const CheckInPage = () => {
   const [ticketDetail, setTicketDetail] = useState(null);
   const [seats, setSeats] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
-  // SADECE BU İKİ SATIR EKLENDİ --
   const [lockExpiresAt, setLockExpiresAt] = useState(null);
   const [lockRemainingSeconds, setLockRemainingSeconds] = useState(null);
-  // ------------------------
+  const [priceDifference, setPriceDifference] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("CREDIT_CARD");
   const [pageLoading, setPageLoading] = useState(true);
   const [pageError, setPageError] = useState(null);
 
@@ -143,32 +144,39 @@ const CheckInPage = () => {
 
       if (selectedSeat?.id === seat.id) {
         setSelectedSeat(null);
-        setLockExpiresAt(null); // <-- YENİ: Seçim iptal olunca sayacı sıfırla
+        setLockExpiresAt(null);
+        setPriceDifference(0);
         return;
       }
-/*Kodun eski hali
-      await lockSeat(ticket.flightId, seat.id);
-      setSelectedSeat(seat);
-      toast.success(`Koltuk ${seat.seatNumber} seçildi.`);
-    } catch {
-      setSelectedSeat(null);
-    }*/   
-    const lockResult = await lockSeat(ticket.flightId, seat.id);
+    const lockResult = await lockSeat(ticket.flightId, seat.id, ticket?.seatClass);
     const expiresInSeconds = Number(lockResult?.expiresInSeconds) || 0;
 
     setSelectedSeat(seat);
 
     if (expiresInSeconds > 0) {
       setLockExpiresAt(Date.now() + expiresInSeconds * 1000);
+      
+      const getMultiplier = (sClass) => sClass === "FIRST_CLASS" ? 4 : sClass === "BUSINESS" ? 2.5 : 1;
+      const basePrice = Number(ticketDetail?.flight?.basePrice || ticket?.flight?.basePrice || 0);
+      const currentMultiplier = getMultiplier(ticket?.seatClass);
+      const newMultiplier = getMultiplier(seat.seatClass);
+      
+      if (newMultiplier > currentMultiplier) {
+        setPriceDifference((newMultiplier * basePrice) - (currentMultiplier * basePrice));
+      } else {
+        setPriceDifference(0);
+      }
     } else {
       setLockExpiresAt(null);
+      setPriceDifference(0);
     }
 
     toast.success(`Koltuk ${seat.seatNumber} geçici olarak seçildi.`);
   } catch {
     setSelectedSeat(null);
     setLockExpiresAt(null);
-  }   
+    setPriceDifference(0);
+  }
   };
 
   const handleComplete = async () => {
@@ -178,7 +186,7 @@ const CheckInPage = () => {
     }
 
     try {
-      await completeCheckIn(ticketId, selectedSeat.id);
+      await completeCheckIn(ticketId, selectedSeat.id, priceDifference > 0 ? paymentMethod : undefined);
       toast.success("Check-in tamamlandı!");
       navigate(ROUTES.PASSENGER.boardingPass(ticketId));
     } catch {
@@ -227,7 +235,7 @@ const CheckInPage = () => {
         <div className="checkin-page__seats card card--elevated">
           <h3 className="checkin-page__seats-title">Koltuk Seçimi</h3>
           <p className="checkin-page__seats-hint">
-            Yalnızca yeşil koltuklar seçilebilir. Koltuk uçuşa özeldir.
+            Koltuk haritasından dilediğiniz koltuğu seçebilirsiniz. Biletinizin sınıfından daha üst bir sınıf seçerseniz aradaki fiyat farkını ödeyerek sınıfınızı yükseltebilirsiniz.
           </p>
           {/* === YENİ EKLENEN SAYAÇ ALANI BAŞLANGICI === */}
 
@@ -242,12 +250,27 @@ const CheckInPage = () => {
             </div>
           )}
 
-            {/* === YENİ EKLENEN SAYAÇ ALANI BİTİŞİ === */}
+          {selectedSeat && priceDifference > 0 && lockRemainingSeconds != null && (
+            <div className="card" style={{ marginTop: '1rem', marginBottom: '1rem', padding: '1rem', border: '1px solid var(--primary-color)' }}>
+              <h4 style={{ marginBottom: '0.5rem', color: 'var(--primary-color)' }}>Sınıf Yükseltme Ücreti: {priceDifference.toLocaleString('tr-TR')} ₺</h4>
+              <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>Daha üst sınıf bir koltuk seçtiniz. Check-in işlemini tamamlamak için aradaki fiyat farkını ödemeniz gerekmektedir.</p>
+              <Select
+                label="Ödeme Yöntemi"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                options={[
+                  { value: "CREDIT_CARD", label: "Kredi Kartı" },
+                  { value: "DEBIT_CARD", label: "Banka Kartı" },
+                ]}
+              />
+            </div>
+          )}
 
           <SeatMap
             seats={seats}
             selectedSeatId={selectedSeat?.id}
             onSelectSeat={handleSelectSeat}
+            ticketSeatClass={null}
           />
 
           <Button

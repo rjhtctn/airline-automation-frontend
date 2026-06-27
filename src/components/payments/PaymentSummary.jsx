@@ -1,6 +1,7 @@
 import Badge from "../common/Badge";
 import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
+import { SEAT_CLASS_LABELS } from "../../constants/statusLabels";
 
 const PaymentSummary = ({ reservation }) => {
   const { flight } = reservation;
@@ -35,6 +36,7 @@ const PaymentSummary = ({ reservation }) => {
         <span>Yolcu Sayısı</span>
         <span>{reservation.passengers?.length || 0}</span>
       </div>
+
 
       <div className="payment-summary__row">
         <span>Durum</span>

@@ -67,7 +67,7 @@ const FlightDetailPage = () => {
     return (
       <div className="page">
         <ErrorMessage message={error} />
-        <Link to={ROUTES.FLIGHT_SEARCH}>
+        <Link to={ROUTES.HOME}>
           <Button variant="outline">Uçuş Aramaya Dön</Button>
         </Link>
       </div>
@@ -76,7 +76,7 @@ const FlightDetailPage = () => {
 
   return (
     <div className="page flight-detail-page">
-      <Link to={ROUTES.FLIGHT_SEARCH} className="flight-detail-page__back">
+      <Link to={ROUTES.HOME} className="flight-detail-page__back">
         <ArrowLeft size={16} />
         Arama sonuçlarına dön
       </Link>
@@ -105,9 +105,17 @@ const FlightDetailPage = () => {
               : "Rezervasyon yapmak için giriş yapmanız gerekir."}
           </p>
         </div>
-        <Button variant="accent" size="lg" onClick={handleReservation}>
+        <Button
+          variant="accent"
+          size="lg"
+          onClick={handleReservation}
+          disabled={["CANCELLED", "COMPLETED"].includes(flight?.status)}
+          title={["CANCELLED", "COMPLETED"].includes(flight?.status) ? "Bu uçuş rezervasyona kapalı" : undefined}
+        >
           <Ticket size={18} />
-          Rezervasyon Yap
+          {["CANCELLED", "COMPLETED"].includes(flight?.status)
+            ? "Rezervasyon Yapılamaz"
+            : "Rezervasyon Yap"}
         </Button>
       </div>
     </div>

@@ -23,10 +23,10 @@ const useCheckIn = () => {
     }
   }, []);
 
-  const lockSeat = useCallback(async (flightId, seatId) => {
+  const lockSeat = useCallback(async (flightId, seatId, ticketSeatClass) => {
     setError(null);
     try {
-      const response = await seatApi.lock(flightId, seatId);
+      const response = await seatApi.lock(flightId, seatId, ticketSeatClass);
       return response.data.data;
     } catch (err) {
       const message =
@@ -44,11 +44,11 @@ const useCheckIn = () => {
     }
   }, []);
 
-  const completeCheckIn = useCallback(async (ticketId, seatId) => {
+  const completeCheckIn = useCallback(async (ticketId, seatId, paymentMethod) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await checkinApi.checkIn(ticketId, seatId);
+      const response = await checkinApi.checkIn(ticketId, seatId, paymentMethod);
       return mapCheckIn(response.data.data);
     } catch (err) {
       const message =

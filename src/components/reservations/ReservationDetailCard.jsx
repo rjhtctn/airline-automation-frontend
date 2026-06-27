@@ -2,6 +2,7 @@ import { Plane, Users, Calendar, Clock, Hash } from "lucide-react";
 import Badge from "../common/Badge";
 import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
+import { SEAT_CLASS_LABELS } from "../../constants/statusLabels";
 
 const ReservationDetailCard = ({ reservation }) => {
   const { flight, passengers } = reservation;
@@ -97,12 +98,14 @@ const ReservationDetailCard = ({ reservation }) => {
         </h3>
         <div className="reservation-detail-card__passengers">
           {passengers.map((p) => (
-            <div key={p.id} className="reservation-detail-card__passenger">
-              <strong>{p.fullName}</strong>
-              <span>
-                {p.nationalId && `TC: ${p.nationalId}`}
-                {p.passportNumber && `Pasaport: ${p.passportNumber}`}
-              </span>
+            <div key={p.id} className="reservation-detail-card__passenger" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <strong>{p.fullName}</strong>
+                <span>
+                  {p.nationalId && `TC: ${p.nationalId}`}
+                  {p.passportNumber && `Pasaport: ${p.passportNumber}`}
+                </span>
+              </div>
             </div>
           ))}
         </div>

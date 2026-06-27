@@ -22,8 +22,8 @@ const groupSeatsByRow = (seats) => {
     }));
 };
 
-const SeatMap = ({ seats = [], selectedSeatId, onSelectSeat }) => {
-  const [selectedClass, setSelectedClass] = useState("ALL");
+const SeatMap = ({ seats = [], selectedSeatId, onSelectSeat, ticketSeatClass = null }) => {
+  const [selectedClass, setSelectedClass] = useState(ticketSeatClass || "ALL");
   const classSet = [...new Set(seats.map((s) => s.seatClass))];
 
   const filteredSeats =
@@ -50,25 +50,36 @@ const SeatMap = ({ seats = [], selectedSeatId, onSelectSeat }) => {
         </span>
       </div>
 
+      {ticketSeatClass && (
+        <p className="seat-map__class-hint">
+          Biletiniz <strong>{SEAT_CLASS_LABELS[ticketSeatClass] || ticketSeatClass}</strong> sınıfındadır. Yalnızca bu sınıfa ait koltuklar seçilebilir.
+        </p>
+      )}
+
       {classSet.length > 0 && (
         <div className="seat-map__classes">
-          <button
-            type="button"
-            className={`seat-map__class-badge ${
-              selectedClass === "ALL" ? "seat-map__class-badge--active" : ""
-            }`}
-            onClick={() => setSelectedClass("ALL")}
-          >
-            Tümü
-          </button>
+          {!ticketSeatClass && (
+            <button
+              type="button"
+              className={`seat-map__class-badge ${
+                selectedClass === "ALL" ? "seat-map__class-badge--active" : ""
+              }`}
+              onClick={() => setSelectedClass("ALL")}
+            >
+              Tümü
+            </button>
+          )}
           {classSet.map((cls) => (
             <button
               key={cls}
               type="button"
               className={`seat-map__class-badge ${
                 selectedClass === cls ? "seat-map__class-badge--active" : ""
+              } ${
+                ticketSeatClass && ticketSeatClass !== cls ? "seat-map__class-badge--disabled" : ""
               }`}
-              onClick={() => setSelectedClass(cls)}
+              onClick={() => !ticketSeatClass || ticketSeatClass === cls ? setSelectedClass(cls) : null}
+              disabled={!!(ticketSeatClass && ticketSeatClass !== cls)}
             >
               {SEAT_CLASS_LABELS[cls] || cls}
             </button>
@@ -83,14 +94,20 @@ const SeatMap = ({ seats = [], selectedSeatId, onSelectSeat }) => {
           <div key={rowNum} className="seat-map__row">
             <span className="seat-map__row-label">{rowNum}</span>
             <div className="seat-map__row-seats">
-              {rowSeats.map((seat) => (
-                <SeatItem
-                  key={seat.id}
-                  seat={seat}
-                  selected={selectedSeatId === seat.id}
-                  onSelect={onSelectSeat}
-                />
-              ))}
+              {rowSeats.map((seat) => {
+                const isWrongClass = ticketSeatClass && seat.seatClass !== ticketSeatClass;
+                const effectiveSeat = isWrongClass
+                  ? { ...seat, status: "OCCUPIED" }
+                  : seat;
+                return (
+                  <SeatItem
+                    key={seat.id}
+                    seat={effectiveSeat}
+                    selected={selectedSeatId === seat.id}
+                    onSelect={isWrongClass ? undefined : onSelectSeat}
+                  />
+                );
+              })}
             </div>
           </div>
         ))}

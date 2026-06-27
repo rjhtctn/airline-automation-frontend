@@ -351,6 +351,21 @@
   border-color: var(--color-primary-dark);
 }
 
+.seat-map__class-badge--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.seat-map__class-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border-left: 3px solid var(--color-accent);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: var(--space-4);
+}
+
 .seat-map__cockpit {
   text-align: center;
   font-size: var(--text-sm);

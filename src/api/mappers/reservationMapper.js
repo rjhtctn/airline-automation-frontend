@@ -6,9 +6,7 @@ export const mapReservationPassenger = (passenger) => {
   if (!passenger) return passenger;
   return {
     ...passenger,
-    fullName:
-      passenger.fullName ||
-      `${passenger.firstName || ""} ${passenger.lastName || ""}`.trim(),
+    fullName: `${passenger.firstName || ""} ${passenger.lastName || ""}`.trim(),
   };
 };
 
@@ -18,10 +16,9 @@ export const mapReservation = (reservation) => {
   const passengers = (reservation.passengers || []).map(mapReservationPassenger);
   const flight = mapFlight(reservation.flight);
   const basePrice = Number(flight?.basePrice || 0);
-  const totalPrice =
-    reservation.totalPrice ??
-    reservation.amount ??
-    (basePrice && passengers.length ? basePrice * passengers.length : 0);
+  
+  const amount = basePrice * passengers.length;
+  const totalPrice = reservation.totalPrice ?? reservation.amount ?? amount;
 
   return {
     ...reservation,

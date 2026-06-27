@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Plane, Clock, Users } from "lucide-react";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
-import { formatTime, formatDuration } from "../../utils/formatDate";
+import { formatTime, formatDate, formatDuration } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
 import ROUTES from "../../constants/routes";
 
@@ -24,6 +24,9 @@ const FlightCard = ({ flight, passengerCount = 1 }) => {
           <span className="flight-card__time">
             {formatTime(flight.departureTime)}
           </span>
+          <span className="flight-card__date">
+            {formatDate(flight.departureTime)}
+          </span>
           <span className="flight-card__city-name">{flight.departureCity}</span>
           <span className="flight-card__airport">{flight.departureAirportName}</span>
         </div>
@@ -40,6 +43,9 @@ const FlightCard = ({ flight, passengerCount = 1 }) => {
         <div className="flight-card__city flight-card__city--arrival">
           <span className="flight-card__time">
             {formatTime(flight.arrivalTime)}
+          </span>
+          <span className="flight-card__date">
+            {formatDate(flight.arrivalTime)}
           </span>
           <span className="flight-card__city-name">{flight.arrivalCity}</span>
           <span className="flight-card__airport">{flight.arrivalAirportName}</span>

@@ -2,6 +2,7 @@ import { Plane, User, MapPin, Calendar, DoorOpen } from "lucide-react";
 import Badge from "../common/Badge";
 import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
+import { SEAT_CLASS_LABELS } from "../../constants/statusLabels";
 
 const TicketDetailCard = ({ ticket }) => {
   return (
@@ -41,6 +42,12 @@ const TicketDetailCard = ({ ticket }) => {
               <dt>Koltuk</dt>
               <dd>{ticket.seatNumber || "Henüz atanmadı"}</dd>
             </div>
+            {ticket.seatClass && (
+              <div>
+                <dt>Koltuk Sınıfı</dt>
+                <dd>{SEAT_CLASS_LABELS[ticket.seatClass] || ticket.seatClass}</dd>
+              </div>
+            )}
           </dl>
         </div>
 

@@ -6,6 +6,7 @@ import { formatDateTime } from "../../utils/formatDate";
 import { formatPrice } from "../../utils/formatPrice";
 import ROUTES from "../../constants/routes";
 import { canCheckInTicket, getCheckInWindowMessage } from "../../utils/ticketRules";
+import { SEAT_CLASS_LABELS } from "../../constants/statusLabels";
 
 const TicketCard = ({ ticket }) => {
   const canCheckIn = canCheckInTicket(ticket);
@@ -45,6 +46,12 @@ const TicketCard = ({ ticket }) => {
           <span>
             <Armchair size={14} />
             Koltuk: {ticket.seatNumber}
+          </span>
+        )}
+        {ticket.seatClass && (
+          <span>
+            <Armchair size={14} />
+            {SEAT_CLASS_LABELS[ticket.seatClass] || ticket.seatClass}
           </span>
         )}
       </div>

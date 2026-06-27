@@ -129,6 +129,13 @@
   font-family: var(--font-display);
 }
 
+.flight-card__date {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
 .flight-card__city-name {
   font-size: var(--text-base);
   font-weight: var(--font-semibold);
